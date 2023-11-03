@@ -1,3 +1,5 @@
+#include "line_following.h"
+
 static const double SENSOR_COUNT = 5;
 
 // PID Gain Constants

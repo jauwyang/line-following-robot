@@ -1,19 +1,7 @@
+#include "colour_sensor.h"
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
-
-uint32_t sensor_weights[] = {0, 1, 2, 3, 4};
-
-enum Colour {
-	RED,
-	GREEN,
-	BLUE,
-};
-
-typedef struct {
-	uint32_t upperBoundFrequency;
-	uint32_t lowerBoundFrequency;
-} colourFrequency;
 
 static const colourFrequency Red = { 1, 0 };
 static const colourFrequency Green = { 2, 0 };
@@ -82,7 +70,7 @@ uint32_t* processColourSensorReadings(uint32_t rawSensorReadings[], uint32_t arr
 }
 
 
-double getPositionOfLine(uint32_t processedSensorReadings[], uint32_t arraySize) {
+double getPositionOfLine(uint32_t processedSensorReadings[], uint32_t arraySize){
 	/**
 	 * This function determines/estimates the relative position of the line w.r.t. the robot
 	 * This is needed since multiple sensors might detect the line at once, so find the average location.
