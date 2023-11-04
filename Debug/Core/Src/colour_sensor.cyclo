@@ -1,0 +1,5 @@
+../Core/Src/colour_sensor.c:11:6:isRed	3
+../Core/Src/colour_sensor.c:19:6:isGreen	3
+../Core/Src/colour_sensor.c:27:6:isBlue	3
+../Core/Src/colour_sensor.c:35:11:processColourSensorReadings	8
+../Core/Src/colour_sensor.c:73:8:getPositionOfLine	3
