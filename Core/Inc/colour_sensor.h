@@ -1,6 +1,9 @@
 #ifndef COLOUR_SENSOR_H
 #define COLOUR_SENSOR_H
 
+#include <stdbool.h>
+#include <stdint.h>
+
 enum Colour {
 	RED,
 	GREEN,
