@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "state_machine.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -69,7 +70,7 @@ static void MX_TIM1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  enum ROBOT_SEQUENCE currentRobotSequence = START;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
