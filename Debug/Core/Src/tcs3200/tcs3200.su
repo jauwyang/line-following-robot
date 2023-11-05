@@ -1,0 +1,2 @@
+../Core/Src/tcs3200/tcs3200.c:8:6:tcs3200_select_filter	16	static
+../Core/Src/tcs3200/tcs3200.c:32:6:tcs3200_select_frequency	16	static

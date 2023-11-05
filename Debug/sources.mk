@@ -25,6 +25,7 @@ SUBDIRS := \
 Core/Src \
 Core/Src/l298n \
 Core/Src/mg995 \
+Core/Src/tcs3200 \
 Core/Startup \
 Drivers/STM32F4xx_HAL_Driver/Src \
 
