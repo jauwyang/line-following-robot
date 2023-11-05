@@ -8,7 +8,7 @@ static const double Kd = 0;
 static const double Ki = 0;
 
 double previousError = 0;
-
+/*
 double PID_calculator(double linePosition) {
 	double error = GOAL - linePosition;
 
@@ -21,4 +21,4 @@ double PID_calculator(double linePosition) {
 
 	return steeringValue;
 	//TODO: SCALE THE VALUES SO THAT (I.E. HOW MUCH THE THING SHOULD TURN)
-}
+}*/
