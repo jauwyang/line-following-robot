@@ -1,4 +1,4 @@
-#include "colour_sensor.h"
+/*#include "colour_sensor.h"
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
@@ -39,14 +39,13 @@ bool isBlack(uint32_t rawColourFrequency){
 }
 
 
-
 void readRawColourSensors(uint32_t *rawSensorReadings, uint32_t sensorCount){
 	//TODO: insert sensor readings algorithm [HENCHEL]
 	//TODO: need to add this function to header file
 }
 
-
-void processColourSensorReadings(bool *processedSensorReadings, uint32_t *rawSensorReadings, uint32_t sensorCount, enum Colour targetColourName){
+*/
+//void processColourSensorReadings(bool *processedSensorReadings, uint32_t *rawSensorReadings, uint32_t sensorCount, enum Colour targetColourName){
 	/**
 	 * This converts the raw sensor readings to an array of true/false depending whether the target colour has
 	 * been detected.
@@ -56,7 +55,7 @@ void processColourSensorReadings(bool *processedSensorReadings, uint32_t *rawSen
 	 * @param targetColourName Enum value specifying which colour to detect.
 	 * @return Array of processed sensor readings
 	 */
-
+/*-
 	// detect for a specific colour given the desired colourName
 	switch (targetColourName){
 		case RED:
@@ -96,8 +95,8 @@ uint32_t countMatchingSensorColourDetections(uint32_t sensorCount, enum Colour t
 	return colourCount;
 }
 
-
-double getPositionOfColourSource(uint32_t sensorCount, enum Colour targetColourName){
+*/
+//double getPositionOfColourSource(uint32_t sensorCount, enum Colour targetColourName){
 	/**
 	 * This function determines/estimates the relative position of the colour  w.r.t. the robot
 	 * This is needed since multiple sensors might detect the colour at once, so find the average location.
@@ -108,6 +107,7 @@ double getPositionOfColourSource(uint32_t sensorCount, enum Colour targetColourN
 	 * @return getPositionOfLine Returns value relative to position of source to robot.
 	 */
 
+/*
 	uint32_t rawSensorReadings[sensorCount];
 	readRawColourSensors(*rawSensorReadings, sensorCount);
 
@@ -127,3 +127,4 @@ double getPositionOfColourSource(uint32_t sensorCount, enum Colour targetColourN
 
 	return colourSourceLocation;
 }
+*/

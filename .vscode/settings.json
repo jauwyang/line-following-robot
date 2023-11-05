@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "ir_line_following.h": "c",
+        "ir_sensor.h": "c"
+    }
+}

@@ -1,4 +1,5 @@
-//#include "IR_sensor.h"
+#include "IR_sensor_version/IR_sensor.h"
+
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
@@ -38,21 +39,10 @@
 //	}
 //}
 
-
-
-void IR_readRawColourSensors(uint32_t *rawSensorReadings, uint32_t sensorCount){
-	//TODO: insert sensor readings algorithm [HENCHEL]
-	//TODO: need to add this function to header file
-}
-
-
-uint32_t IR_countMatchingSensorColourDetections(uint32_t sensorCount){
-	uint32_t IR_rawSensorReadings[sensorCount];
-	IR_readRawColourSensors(*rawSensorReadings, sensorCount);
-
+uint32_t IR_countMatchingSensorColourDetection(const uint32_t IR_rawSensorReadings[], const uint8_t sensorCount) {
 	uint32_t colourCount = 0;
-	for (uint32_t i = 0; i < sensorCount; i++){
-		if (IR_rawSensorReadings[i] == true){
+	for (uint8_t i = 0; i < sensorCount; i++) {
+		if (IR_rawSensorReadings[i]) {
 			colourCount++;
 		}
 	}
@@ -60,20 +50,16 @@ uint32_t IR_countMatchingSensorColourDetections(uint32_t sensorCount){
 }
 
 
-double IR_getPositionOfColourSource(uint32_t sensorCount){
-	uint32_t rawSensorReadings[sensorCount];
-	readRawColourSensors(*rawSensorReadings, sensorCount);
-
+double IR_getPositionOfColourSource(const uint32_t IR_rawSensorReadings[], const uint8_t sensorCount){
 	double detectedColourIndicesSum = 0;
 	double detectedColourCount = 0;
 
-	for (uint32_t i = 0; i < sensorCount; i++){
-		if (rawSensorReadings[i] == true) {
+	for (uint8_t i = 0; i < sensorCount; i++){
+		if (IR_rawSensorReadings[i]) {
 			detectedColourIndicesSum = detectedColourIndicesSum + i;
 			detectedColourCount++;
 		}
 	}
-	double colourSourceLocation = detectedColourIndicesSum / detectedColourCount;
 
-	return colourSourceLocation;
+	return detectedColourIndicesSum / detectedColourCount;
 }
