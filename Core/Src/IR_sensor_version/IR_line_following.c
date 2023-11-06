@@ -1,10 +1,12 @@
 #include "IR_sensor_version/IR_line_following.h"
-#include "l298n/l298n.h"
+#include "IR_sensor_version/IR_sensor.h"
+//#include "l298n/l298n.h"
 
 // PID Gain Constants
 static const double Kp = 1;
 static const double Kd = 0;
 static const double Ki = 0;
+static const double GOAL = SENSOR_COUNT / 2; // JOSH MIGHT NEED TO SCALE THIS
 
 
 double IR_getPathLinePosition(const uint32_t IR_rawSensorReadings[], const uint8_t sensorCount) {
@@ -14,11 +16,12 @@ double IR_getPathLinePosition(const uint32_t IR_rawSensorReadings[], const uint8
 
 double IR_PIDAlgorithm(double currentLinePosition) {
 	static double previousError = 0;
+	static double errorIntegral = 0;
 
 	double error = GOAL - currentLinePosition;
 
 	double errorDerivative = error - previousError;
-	double errorIntegral = errorIntegral + error;
+	errorIntegral = errorIntegral + error;
 
 	double steeringValue = Kp*error + Ki*errorIntegral + Kd*errorDerivative;
 
@@ -36,7 +39,7 @@ double convertRPM2PWM(double RPM){
 
 // NOTE: THE SENSORS ARE ARRANGED FROM 0 TO N FROM LEFT TO RIGHT IN THE ROBOT'S POV
 void IR_followLine(motor_t *leftMotor, motor_t *rightMotor, const uint32_t IR_rawSensorReadings[], const uint8_t sensorCount){
-	double linePosition = IR_getPathLinePosition(rawSensorReadings, sensorCount);
+	double linePosition = IR_getPathLinePosition(IR_rawSensorReadings, sensorCount);
 	double steeringAdjustment = IR_PIDAlgorithm(linePosition);
 
 	if (steeringAdjustment > 0){ // line is to the right (in accordance to NOTE above)

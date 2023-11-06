@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-static const double SENSOR_COUNT = 5;
+static const double SENSOR_COUNT = 3; // JOSH THERE ARE 2 SETS OF THESE SETUP
 
 typedef struct {
 	uint32_t upperBoundFrequency;

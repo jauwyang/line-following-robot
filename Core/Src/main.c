@@ -18,8 +18,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "state_machine.h"
-
+#include "state_machine/state_machine.h"
+#include "IR_sensor_version/IR_line_following.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "mg995/mg995.h"
@@ -84,7 +84,7 @@ static void read_ir_sensors(void) {
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  enum ROBOT_SEQUENCE currentRobotSequence = START;
+//  enum ROBOT_SEQUENCE currentRobotSequence = START;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -117,16 +117,35 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
 
+
+  // Initialize Left and Right Motors
+  motor_t motor_left = {
+          .in_ports = { GPIOB, GPIOB },
+          .in_pins     = { GPIO_PIN_12, GPIO_PIN_13 },
+          .pwm_channel = TIM_CHANNEL_1
+  };
+
+  motor_t motor_right = {
+          .in_ports = { GPIOC, GPIOC },
+          .in_pins = { GPIO_PIN_4, GPIO_PIN_5 },
+          .pwm_channel = TIM_CHANNEL_2
+  };
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_Delay(10000);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  read_ir_sensors();
+	  l298n_move_fwd_single(&motor_left, MAX_PWM);
+	  l298n_move_fwd_single(&motor_right, MAX_PWM);
+
+//	  read_ir_sensors();
+//	  IR_followLine(&motor_left, &motor_right, ir_values, IR_COUNT);
+
 
 	  // Uncomment for testing
 	  /*sprintf(msg, "%hu %hu %hu\r\n", ir_values[0], ir_values[1], ir_values[2]);
