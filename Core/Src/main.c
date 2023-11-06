@@ -27,6 +27,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -170,6 +171,14 @@ int main(void)
   uint32_t blue = 0;
   uint32_t green = 0;
 
+//  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+//  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+//
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -182,9 +191,16 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  l298n_move_fwd_single(&motor_left, MAX_PWM);
-	  l298n_move_fwd_single(&motor_right, MAX_PWM);
+	  double rightMotorPWM = 285;
+	  double leftMotorPWM = 300;
+	  //double leftMotorPWM = -0.001*pow(rightMotorPWM, 2) + 1.2912*rightMotorPWM + 14.932;
+//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, MAX_PWM/2);
+//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, MAX_PWM/2);
+	  l298n_move_fwd_single(&motor_left, (uint32_t) round(leftMotorPWM));
+	  l298n_move_fwd_single(&motor_right, (uint32_t) round(rightMotorPWM));
 
+//	  printf("LEFT: %f\n", leftMotorPWM);
+//	  printf("RIGHT: %f\n", rightMotorPWM);
 	  // Detect Red
 	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
 	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET);
@@ -285,7 +301,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 840-1;
+  htim1.Init.Prescaler = 3360-1;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 1000-1;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
