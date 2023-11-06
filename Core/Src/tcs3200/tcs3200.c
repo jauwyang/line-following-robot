@@ -53,3 +53,22 @@ void tcs3200_select_frequency(tcs3200_t *sensor, const frequency_scale_e frequen
 	}
 }
 
+void tcs3200_read_colour_callback(tcs3200_irqh_params_t *params, TIM_HandleTypeDef *htim) {
+	if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) {
+		if (!params->start_capture_flag) {
+			params->start_val = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+			params->start_capture_flag = true;
+
+		} else {
+			params->end_val = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+			__HAL_TIM_SET_COUNTER(htim, 0);
+
+			params->difference = (params->end_val > params->start_val)
+							   ? params->end_val - params->start_val
+							   : ((uint32_t) 0xFFFF - params->start_val) + params->end_val;
+
+			params->start_capture_flag = false;
+			__HAL_TIM_DISABLE_IT(htim, TIM_IT_CC1);
+		}
+	}
+}

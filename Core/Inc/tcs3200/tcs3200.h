@@ -1,6 +1,7 @@
 #ifndef LINE_FOLLOWING_ROBOT_COLOUR_TCS3200_H
 #define LINE_FOLLOWING_ROBOT_COLOUR_TCS3200_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stm32f4xx_hal.h>
 
@@ -17,6 +18,15 @@ typedef struct _tcs3200_t {
 	uint16_t select_pins[SELECT_PIN_COUNT];
 
 } tcs3200_t;
+
+typedef struct _tcs3200_irqh_params_t {
+
+	bool start_capture_flag;
+	uint32_t start_val;
+	uint32_t end_val;
+	uint32_t difference;
+
+} tcs3200_irqh_params_t;
 
 typedef enum _filter_colour_e {
 
@@ -38,5 +48,6 @@ typedef enum _frequency_scale_e {
 
 void tcs3200_select_filter(tcs3200_t *sensor, filter_colour_e filter);
 void tcs3200_select_frequency(tcs3200_t *sensor, frequency_scale_e frequency);
+void tcs3200_read_colour_callback(tcs3200_irqh_params_t *params, TIM_HandleTypeDef *htim);
 
 #endif // LINE_FOLLOWING_ROBOT_COLOUR_TCS3200_H
