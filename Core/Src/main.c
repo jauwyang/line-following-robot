@@ -75,6 +75,7 @@ volatile uint32_t end_val = 0;
 volatile uint32_t difference = 0;
 volatile bool was_start_captured = false;
 
+// IR Sensor + USART Code
 static uint32_t ir_values[IR_COUNT] = {0};
 char msg[128] = {0};
 
@@ -90,8 +91,6 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
 			start_val = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
 			was_start_captured = true;
 
-			__HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_RISING);
-
 		} else {
 			end_val = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
 			__HAL_TIM_SET_COUNTER(htim, 0);
@@ -100,11 +99,41 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
 											   : (0xFFFF - start_val) + end_val;
 
 			was_start_captured = false;
-			__HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_FALLING);
-			__HAL_TIM_DISABLE_IT(&htim1, TIM_IT_CC1);
+			__HAL_TIM_DISABLE_IT(&htim3, TIM_IT_CC1);
 		}
 	}
 }
+
+typedef enum _color_e {
+	COLOR_RED = 0,
+	COLOR_BLUE,
+	COLOR_CLEAR,
+	COLOR_GREEN
+} color_e;
+
+static void set_color(const color_e color) {
+	switch (color) {
+	case COLOR_RED:
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET);
+		break;
+	case COLOR_BLUE:
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+		break;
+	case COLOR_CLEAR:
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET);
+		break;
+	case COLOR_GREEN:
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+		break;
+	default:
+		break;
+	}
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -148,6 +177,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
 
+  // Colour Sensor Interrupt
   HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
   // Initialize Left and Right Motors
@@ -171,64 +201,110 @@ int main(void)
   uint32_t blue = 0;
   uint32_t green = 0;
 
-//  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
-//  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-//
-//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
-//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+  // Static Routine - Construction Check
+  while (ir_values[0] && ir_values[1]) {
+	  l298n_move_fwd_single(&motor_left, (uint32_t) round(225));
+	  l298n_move_fwd_single(&motor_right, (uint32_t) round(150));
+	  read_ir_sensors();
+  }
 
+  // When line is detected, stop for 2 seconds
+  HAL_Delay(2000);
+  l298n_stop(&motor_left, &motor_right);
+  HAL_Delay(2000);
 
+  // Reverse for 2 seconds, then turn right for 2 seconds
+  l298n_move_rev_single(&motor_left, (uint32_t) round(120));
+  l298n_move_rev_single(&motor_right, (uint32_t) round(225));
+  HAL_Delay(4000);
+
+  l298n_move_fwd_single(&motor_left, (uint32_t) round(200));
+  l298n_move_fwd_single(&motor_right, (uint32_t) round(150));
+  HAL_Delay(2000);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  // Wait for 10 seconds before beginning the main loop
-  HAL_Delay(10000);
+  // Wait for 6 seconds before beginning the main loop
+
+  HAL_Delay(6000);
   while (1)
   {
+	  /*double rightMotorPWM = 150;
+	  double leftMotorPWM = 225;*/
     /* USER CODE END WHILE */
+	  // L = 6.8 | R = 6.4
+	  // L = 6.8 | R 6.8
 
     /* USER CODE BEGIN 3 */
-	  double rightMotorPWM = 285;
-	  double leftMotorPWM = 300;
-	  //double leftMotorPWM = -0.001*pow(rightMotorPWM, 2) + 1.2912*rightMotorPWM + 14.932;
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, MAX_PWM/2);
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, MAX_PWM/2);
-	  l298n_move_fwd_single(&motor_left, (uint32_t) round(leftMotorPWM));
-	  l298n_move_fwd_single(&motor_right, (uint32_t) round(rightMotorPWM));
 
-//	  printf("LEFT: %f\n", leftMotorPWM);
-//	  printf("RIGHT: %f\n", rightMotorPWM);
+	  // USB Power
+	  // L = 6.8 | R 6.8 - measured voltages
+	  // Reversed polarity: same results
+
+	  // 6.65 | 6.68
+
+	  // Battery
+	  // 6.55 | 6.8
+	  // 6.6 | 6.6 (L = 300, R = 320)
+
+
+	  // Reverse
+	  // USB: 6.7 | 6.65
+	  // Battery: 6.6 | 6.6
+
+	  // While line not detected, keep checking for line and moving forward
+	  /*while (!ir_values[0] && !ir_values[1] && !ir_values[2]) {
+		  l298n_move_fwd_single(&motor_left, (uint32_t) round(225));
+		  l298n_move_fwd_single(&motor_right, (uint32_t) round(150));
+		  read_ir_sensors();
+	  }
+
+	  // When line is detected, stop for 2 seconds
+	  l298n_stop(&motor_left, &motor_right);
+	  HAL_Delay(2000);
+
+	  // Reverse for 2 seconds, then turn right for 2 seconds
+	  l298n_move_rev_single(&motor_left, (uint32_t) round(120));
+	  l298n_move_rev_single(&motor_right, (uint32_t) round(225));
+	  HAL_Delay(2000);
+
+	  l298n_move_fwd_single(&motor_left, (uint32_t) round(200));
+	  l298n_move_fwd_single(&motor_right, (uint32_t) round(150));
+	  HAL_Delay(2000);*/
+
+	  /**
+	   * Colour Detection
+	   */
 	  // Detect Red
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET);
+	  set_color(COLOR_RED);
 	  HAL_Delay(5);
-	  __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
+	  __HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
 	  HAL_Delay(5);
 	  red = difference;
 
 	  // Detect Blue
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+	  set_color(COLOR_BLUE);
 	  HAL_Delay(5);
-	  __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
+	  __HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
 	  HAL_Delay(5);
 	  blue = difference;
 
 	  // Detect Green
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+	  set_color(COLOR_GREEN);
 	  HAL_Delay(5);
-	  __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
+	  __HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
 	  HAL_Delay(5);
 	  green = difference;
 
-//	  read_ir_sensors();
-//	  IR_followLine(&motor_left, &motor_right, ir_values, IR_COUNT);
+	  // Emergency IR Test
+	  // read_ir_sensors();
+	  /*sprintf(msg, "IR1: %hu\r\nIR2: %hu\r\nIR3: %hu\r\n\r\n", ir_values[0], ir_values[1], ir_values[2]);
+	  HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);*/
 
-	  sprintf(msg, "Red: %hu\r\n Blue: %hu\r\n Green: %hu\r\n\r\n", red, blue, green);
+	  sprintf(msg, "Red: %hu\r\nBlue: %hu\r\nGreen: %hu\r\n\r\n", red, blue, green);
 	  HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
   }
   /* USER CODE END 3 */

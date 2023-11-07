@@ -1,6 +1,5 @@
 #include "IR_sensor_version/IR_line_following.h"
 #include "IR_sensor_version/IR_sensor.h"
-//#include "l298n/l298n.h"
 
 // PID Gain Constants
 static const double Kp = 1;
@@ -10,8 +9,7 @@ static const double GOAL = SENSOR_COUNT / 2; // JOSH MIGHT NEED TO SCALE THIS
 
 
 double IR_getPathLinePosition(const uint32_t IR_rawSensorReadings[], const uint8_t sensorCount) {
-	double linePosition = IR_getPositionOfColourSource(IR_rawSensorReadings, sensorCount);
-	return linePosition;
+	return IR_getPositionOfColourSource(IR_rawSensorReadings, sensorCount);
 }
 
 double IR_PIDAlgorithm(double currentLinePosition) {
