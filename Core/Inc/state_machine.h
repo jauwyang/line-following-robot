@@ -12,7 +12,8 @@ enum RobotSequence {
     OFF_TRACK_TO_SAFE_ZONE_DRIVE,
     DROPOFF,
     BACKUP_FROM_SAFE_ZONE,
-    RETURN_TO_TRACK,
+	ROTATE_TO_TRACK,
+	DRIVE_TO_TRACK,
     FOLLOW_LINE_TO_START,
     END,
 };
@@ -25,7 +26,8 @@ void rotateToSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, moto
 void offTrackToSafeZoneDrive(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
 void dropOff(enum RobotSequence *currentState);
 void backUpFromSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
-void returnToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
+void rotateToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
+void driveToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
 void followLineToStart(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
 void end(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
 void stateMachine(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);

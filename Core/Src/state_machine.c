@@ -90,10 +90,10 @@ void backUpFromSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, mo
 	l298n_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
 
 	// transition state condition (assume it has backed up)
-	*currentState = RETURN_TO_TRACK;
+	*currentState = ROTATE_TO_TRACK;
 }
 
-void returnToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
+void rotateToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
 	rotation_t rotation_params =  {
 		.angle = 0,	// TODO: Change later for 180 degrees
 		.direction = DIR_CCW
@@ -101,7 +101,10 @@ void returnToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t
 
 	// Rotate 180 degrees CCW
 	l298n_rotate(motorLeft, motorRight, rotation_params);
+	*currentState = DRIVE_TO_TRACK;
+}
 
+void driveToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
 	uint16_t motorPWM = 0;	// TODO: Change later
 	l298n_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
 
@@ -163,9 +166,13 @@ void stateMachine(enum RobotSequence *currentState, motor_t *motorLeft, motor_t 
         	backUpFromSafeZone(currentState, motorLeft, motorRight);
             break;
 
-        case RETURN_TO_TRACK:
-        	returnToTrack(currentState, motorLeft, motorRight);
-            break;
+        case ROTATE_TO_TRACK:
+        	rotateToTrack(currentState, motorLeft, motorRight);
+        	break;
+
+        case DRIVE_TO_TRACK:
+        	driveToTrack(currentState, motorLeft, motorRight);
+        	break;
 
         case FOLLOW_LINE_TO_START:
         	followLineToStart(currentState, motorLeft, motorRight);
