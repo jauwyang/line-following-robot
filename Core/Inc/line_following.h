@@ -1,12 +1,12 @@
 #ifndef LINE_FOLLOWING_H
 #define LINE_FOLLOWING_H
 
-static const double CENTER_SENSOR = 0;
-static const double GOAL = CENTER_SENSOR;
+#include "l298n/l298n.h"
 
-double PIDAlgorithm(double linePosition);
-double getPathLinePosition();
-void follow_line();
+double getPathLinePosition(void);
+double PIDAlgorithm(double currentLinePosition);
+double convertRPM2PWM(double rpm);
+void followLine(motor_t *leftMotor, motor_t *rightMotor);
 
 #endif //LINE_FOLLOWING_H
 

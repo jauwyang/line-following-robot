@@ -70,7 +70,7 @@ static void MX_TIM1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  enum ROBOT_SEQUENCE currentRobotSequence = START;
+  enum RobotSequence currentState = START;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/

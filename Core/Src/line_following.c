@@ -6,11 +6,16 @@ static const double Kp = 1;
 static const double Kd = 0;
 static const double Ki = 0;
 
+static const double GOAL = 1;
+static const double STEERING_FACTOR = 1;  //TODO: SCALE THE VALUES SO THAT (I.E. HOW MUCH THE THING SHOULD TURN)
+static const double RPM2PWM_FACTOR = 1;  //TODO: ADJUST K TO CONVERT RPM TO PWM HERE
 
-double getPathLinePosition(){
-	double linePosition = getPositionOfColourSource(processedSensorReadings, SENSOR_COUNT, RED);
+
+double getPathLinePosition(void){
+	double linePosition = getPositionOfColourSource(RED);
 	return linePosition;
 }
+
 
 double PIDAlgorithm(double currentLinePosition) {
 	static double previousError = 0;
@@ -24,23 +29,41 @@ double PIDAlgorithm(double currentLinePosition) {
 
 	previousError = error;
 
-	return steeringValue;
-	//TODO: SCALE THE VALUES SO THAT (I.E. HOW MUCH THE THING SHOULD TURN)
+	return STEERING_FACTOR*steeringValue;
+	
 }
 
 
-void followLine(){
+double convertRPM2PWM(double rpm){
+	return RPM2PWM_FACTOR*rpm;
+}
+
+
+void followLine(motor_t *leftMotor, motor_t *rightMotor){
 	double linePosition = getPathLinePosition();
 	double steeringAdjustment = PIDAlgorithm(linePosition);
+	
+	// this "left vs right" of the positive/negative sign of the steeringAdjustment depends on the sensor numbering
+	if (steeringAdjustment > 0){  // is on the right
+		double newRPM = MAX_RPM - steeringAdjustment;
+		if (newRPM < MIN_RPM) {  // TODO: WHAT IF WE ACTUALLY NEED THE MOTOR TO NOT MOVE?
+			newRPM = MIN_RPM;  
+		}
 
-	if (steeringAdjustment > 0){
-		//TODO: subtract from max speed/PWM
-		//TODO: make sure new motor value does not exceed bounds (correct it)
-		//TODO: THE POSITIVE/NEGATIVE VALUE ABOUT THE "GOAL" IS DEPENDENT ON THE DIRECTION
-		// 		OF SENSOR ARRAY NUMBERING (I.E. WHETHER SENSOR 0 STARTS ON THE LEFT MOST OR
-		//		RIGHT MOST SENSOR) SO YOU EITHER ADD TO APPLY THIS MOTOR CHANGE TO EITHER THE LEFT OR RIGHT ACCORDINGLY
+		double newPWM = convertRPM2PWM(newRPM);
+
+		l298n_move_fwd_single(rightMotor, newPWM);
+		l298n_move_fwd_single(leftMotor, MAX_PWM);
 	}
-	else { // is negative
-		//TODO: apply same as above here (but keep in mind this is negative)
+	else { // steeringAdjustment is negative (line is to the left)
+		double newRPM = MAX_RPM + steeringAdjustment;
+		if (newRPM < MIN_RPM) {  // TODO: WHAT IF WE ACTUALLY NEED THE MOTOR TO NOT MOVE?
+			newRPM = MIN_RPM;
+		}
+
+		double newPWM = convertRPM2PWM(newRPM);
+
+		l298n_move_fwd_single(rightMotor, MAX_PWM);
+		l298n_move_fwd_single(leftMotor, newPWM);
 	}
 }

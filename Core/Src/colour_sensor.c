@@ -8,13 +8,14 @@
 static const colourFrequency Red = { 1, 0 };
 static const colourFrequency Green = { 2, 0 };
 static const colourFrequency Blue = { 3, 0 };
-static const colourFrequency Black = { 4, 0 };
 
 bool isRed(uint32_t rawColourFrequency){
 	if (rawColourFrequency > Red.lowerBoundFrequency &&
 		rawColourFrequency < Red.upperBoundFrequency){
 		return true;
 	}
+
+	return false;
 }
 
 bool isGreen(uint32_t rawColourFrequency){
@@ -22,6 +23,9 @@ bool isGreen(uint32_t rawColourFrequency){
 		rawColourFrequency < Green.upperBoundFrequency){
 		return true;
 	}
+
+	return false;
+
 }
 
 bool isBlue(uint32_t rawColourFrequency){
@@ -29,28 +33,22 @@ bool isBlue(uint32_t rawColourFrequency){
 		rawColourFrequency < Blue.upperBoundFrequency){
 		return true;
 	}
-}
 
-bool isBlack(uint32_t rawColourFrequency){
-	if (rawColourFrequency > Black.lowerBoundFrequency &&
-		rawColourFrequency < Black.upperBoundFrequency){
-		return true;
-	}
+	return false;
 }
 
 
-
-void readRawColourSensors(uint32_t *rawSensorReadings, uint32_t sensorCount){
-	//TODO: insert sensor readings algorithm [HENCHEL]
-	//TODO: need to add this function to header file
+void readRawColourSensors(uint32_t rawSensorReadings[]){
+	
 }
 
 
-void processColourSensorReadings(bool *processedSensorReadings, uint32_t *rawSensorReadings, uint32_t sensorCount, enum Colour targetColourName){
+void processColourSensorReadings(bool processedSensorReadings[], uint32_t rawSensorReadings[], enum Colour targetColourName){
 	/**
 	 * This converts the raw sensor readings to an array of true/false depending whether the target colour has
 	 * been detected.
-	 *
+	 * 
+	 * @param processedSensorReadings Output of sensors
 	 * @param rawSensorReadings Array of the raw colour sensors value readings.
 	 * @param arraySize Size of the array.
 	 * @param targetColourName Enum value specifying which colour to detect.
@@ -60,17 +58,17 @@ void processColourSensorReadings(bool *processedSensorReadings, uint32_t *rawSen
 	// detect for a specific colour given the desired colourName
 	switch (targetColourName){
 		case RED:
-			for (uint32_t i = 0; i < sensorCount; i++){
+			for (uint32_t i = 0; i < SENSOR_COUNT; i++){
 				processedSensorReadings[i] = isRed(rawSensorReadings[i]);
 			}
 			break;
 		case GREEN:
-			for (uint32_t i = 0; i < sensorCount; i++){
+			for (uint32_t i = 0; i < SENSOR_COUNT; i++){
 				processedSensorReadings[i] = isGreen(rawSensorReadings[i]);
 			}
 			break;
 		case BLUE:
-			for (uint32_t i = 0; i < sensorCount; i++){
+			for (uint32_t i = 0; i < SENSOR_COUNT; i++){
 				processedSensorReadings[i] = isBlue(rawSensorReadings[i]);
 			}
 			break;
@@ -80,16 +78,16 @@ void processColourSensorReadings(bool *processedSensorReadings, uint32_t *rawSen
 }
 
 
-uint32_t countMatchingSensorColourDetections(uint32_t sensorCount, enum Colour targetColourName){
-	uint32_t rawSensorReadings[sensorCount];
-	readRawColourSensors(*rawSensorReadings, sensorCount);
+uint32_t countMatchingSensorColourDetections(enum Colour targetColourName){
+	uint32_t rawSensorReadings[SENSOR_COUNT];
+	readRawColourSensors(rawSensorReadings);
 
-	bool processedSensorReadings[sensorCount];
-	processColourSensorReadings(*processedSensorReadings, *rawSensorReadings, sensorCount, targetColourName);
+	bool processedSensorReadings[SENSOR_COUNT];
+	processColourSensorReadings(processedSensorReadings, rawSensorReadings, targetColourName);
 
 	uint32_t colourCount = 0;
-	for (uint32_t i = 0; i < sensorCount; i++){
-		if (processedColourSensorReadings[i] == true){
+	for (uint32_t i = 0; i < SENSOR_COUNT; i++){
+		if (processedSensorReadings[i] == true){
 			colourCount++;
 		}
 	}
@@ -97,7 +95,7 @@ uint32_t countMatchingSensorColourDetections(uint32_t sensorCount, enum Colour t
 }
 
 
-double getPositionOfColourSource(uint32_t sensorCount, enum Colour targetColourName){
+double getPositionOfColourSource(enum Colour targetColourName){
 	/**
 	 * This function determines/estimates the relative position of the colour  w.r.t. the robot
 	 * This is needed since multiple sensors might detect the colour at once, so find the average location.
@@ -108,16 +106,16 @@ double getPositionOfColourSource(uint32_t sensorCount, enum Colour targetColourN
 	 * @return getPositionOfLine Returns value relative to position of source to robot.
 	 */
 
-	uint32_t rawSensorReadings[sensorCount];
-	readRawColourSensors(*rawSensorReadings, sensorCount);
+	uint32_t rawSensorReadings[SENSOR_COUNT];
+	readRawColourSensors(rawSensorReadings);
 
-	bool processedSensorReadings[sensorCount];
-	processColourSensorReadings(*processedSensorReadings, *rawSensorReadings, sensorCount, targetColourName);
+	bool processedSensorReadings[SENSOR_COUNT];
+	processColourSensorReadings(processedSensorReadings, rawSensorReadings, targetColourName);
 
 	double detectedColourIndicesSum = 0;
 	double detectedColourCount = 0;
 
-	for (uint32_t i = 0; i < sensorCount; i++){
+	for (uint32_t i = 0; i < SENSOR_COUNT; i++){
 		if (processedSensorReadings[i] == true) {
 			detectedColourIndicesSum = detectedColourIndicesSum + i;
 			detectedColourCount++;
