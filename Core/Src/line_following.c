@@ -30,7 +30,7 @@ double PIDAlgorithm(double currentLinePosition) {
 	previousError = error;
 
 	return STEERING_FACTOR*steeringValue;
-
+	
 }
 
 
@@ -42,12 +42,12 @@ double convertRPM2PWM(double rpm){
 void followLine(motor_t *leftMotor, motor_t *rightMotor){
 	double linePosition = getPathLinePosition();
 	double steeringAdjustment = PIDAlgorithm(linePosition);
-
+	
 	// this "left vs right" of the positive/negative sign of the steeringAdjustment depends on the sensor numbering
 	if (steeringAdjustment > 0){  // is on the right
 		double newRPM = MAX_RPM - steeringAdjustment;
 		if (newRPM < MIN_RPM) {  // TODO: WHAT IF WE ACTUALLY NEED THE MOTOR TO NOT MOVE?
-			newRPM = MIN_RPM;
+			newRPM = MIN_RPM;  
 		}
 
 		double newPWM = convertRPM2PWM(newRPM);

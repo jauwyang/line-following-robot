@@ -39,7 +39,7 @@ bool isBlue(uint32_t rawColourFrequency){
 
 
 void readRawColourSensors(uint32_t rawSensorReadings[]){
-
+	
 }
 
 
@@ -47,7 +47,7 @@ void processColourSensorReadings(bool processedSensorReadings[], uint32_t rawSen
 	/**
 	 * This converts the raw sensor readings to an array of true/false depending whether the target colour has
 	 * been detected.
-	 *
+	 * 
 	 * @param processedSensorReadings Output of sensors
 	 * @param rawSensorReadings Array of the raw colour sensors value readings.
 	 * @param arraySize Size of the array.

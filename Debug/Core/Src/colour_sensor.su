@@ -1,5 +1,7 @@
-../Core/Src/colour_sensor.c:11:6:isRed	16	static
-../Core/Src/colour_sensor.c:19:6:isGreen	16	static
-../Core/Src/colour_sensor.c:27:6:isBlue	16	static
-../Core/Src/colour_sensor.c:35:11:processColourSensorReadings	72	dynamic
-../Core/Src/colour_sensor.c:73:8:getPositionOfLine	48	static
+../Core/Src/colour_sensor.c:12:6:isRed	16	static
+../Core/Src/colour_sensor.c:21:6:isGreen	16	static
+../Core/Src/colour_sensor.c:31:6:isBlue	16	static
+../Core/Src/colour_sensor.c:41:6:readRawColourSensors	16	static
+../Core/Src/colour_sensor.c:46:6:processColourSensorReadings	48	static
+../Core/Src/colour_sensor.c:81:10:countMatchingSensorColourDetections	80	dynamic
+../Core/Src/colour_sensor.c:98:8:getPositionOfColourSource	104	dynamic

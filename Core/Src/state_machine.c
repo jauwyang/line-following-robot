@@ -16,7 +16,7 @@ void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorR
 
 	// transition state condition (starting line detected)
 	uint32_t requiredSensorColourMatches = 4;
-	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches){
+	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches){ 
 		*currentState = FOLLOW_LINE_TO_TARGET;
 	}
 }
@@ -35,7 +35,7 @@ void followLineToTarget(enum RobotSequence *currentState, motor_t *motorLeft, mo
 void pickup(enum RobotSequence *currentState){
 	// TODO: move up set amount towards character if needed
 	mg995_close_claw();
-
+	
 	// transition state condition (assumed it has picked up)
 	*currentState = BACKUP_FROM_TARGET;
 }
@@ -43,7 +43,7 @@ void pickup(enum RobotSequence *currentState){
 void backupFromTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	uint16_t motorPWM = 1;	// TODO: Change later
 	l298n_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
-
+	
 	// transition state condition (assume it has finished backing up)
 	*currentState = ROTATE_TO_SAFE_ZONE;
 }
@@ -119,7 +119,7 @@ void driveToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t 
 
 void followLineToStart(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	followLine(motorLeft, motorRight);
-
+	
 	// transition state condition (start/end line detected)
 	uint32_t requiredSensorColourMatches = 4;
 	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches) {

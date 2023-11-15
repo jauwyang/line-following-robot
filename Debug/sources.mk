@@ -27,5 +27,4 @@ Core/Src/l298n \
 Core/Src/mg995 \
 Core/Startup \
 Drivers/STM32F4xx_HAL_Driver/Src \
-Core/Src/tcs3200 \
 
