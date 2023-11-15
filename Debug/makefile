@@ -13,6 +13,7 @@ RM := rm -rf
 -include Core/Startup/subdir.mk
 -include Core/Src/mg995/subdir.mk
 -include Core/Src/l298n/subdir.mk
+-include Core/Src/apds9960/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
 
