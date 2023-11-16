@@ -10,17 +10,12 @@
 #include <stdint.h>
 
 /**
- * I2C Address
+ * Device I2C Address
  */
 
 // Note: left shift by 1 since I2C takes MSB of address first, and
 // address frame is only 7 bits
 #define APDS9960_I2C_ADDR (uint8_t) (0x39 << 1)	// Address is fixed
-
-/**
- * I2C Multiplexer Addresses
- */
-#define TCA9548A_I2C_ADDR	(uint8_t) 0x70
 
 /**
  * Register Addresses

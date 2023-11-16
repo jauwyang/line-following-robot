@@ -1,5 +1,5 @@
-#include "apds9960/apds9960_config.h"
-#include "apds9960/apds9960.h"
+#include "color/apds9960.h"
+#include "color/apds9960_config.h"
 
 #include <stdio.h>
 #include <stm32f4xx_hal.h>
@@ -62,7 +62,7 @@ uint16_t apds9960_read_rgb_single(const uint8_t i2c_addr, const color_e color) {
 		color_reg_high = APDS9960_COLOR_REG_BDATAH;
 		break;
 	default:
-		printf("%s\r\n", "Color argument passed in not supported.");
+		printf("%s\r\n", "Color argument passed in is not supported.");
 		break;
 	}
 

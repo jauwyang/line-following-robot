@@ -15,12 +15,14 @@ typedef struct _rbg_cap_t {
 } rgb_cap_t;
 
 /**
- * Supported colours
+ * Supported colors
  */
 typedef enum _color_e {
+
 	COLOR_RED = 0,
 	COLOR_GREEN,
 	COLOR_BLUE
+
 } color_e;
 
 /**

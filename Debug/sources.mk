@@ -22,7 +22,7 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-Core/Src/apds9960 \
+Core/Src/color \
 Core/Src \
 Core/Src/l298n \
 Core/Src/mg995 \
