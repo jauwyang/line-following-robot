@@ -22,11 +22,12 @@ static void tb6612fng_drive(const uint32_t pwm_channel, uint16_t pwm_val) {
 }
 
 //>>>> SINGLE MOTOR DRIVE <<<<//
+
+// Assume CW is fwd
 void tb6612fng_move_fwd_single(motor_t *motor, uint16_t pwm_val) {
 	// AIN1 = H, AIN2 = L, STBY = H
 	HAL_GPIO_WritePin(motor->ports[0], motor->pins[0], GPIO_PIN_SET);
 	HAL_GPIO_WritePin(motor->ports[1], motor->pins[1], GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(motor->ports[2], motor->pins[2], GPIO_PIN_SET);
 
 	tb6612fng_drive(motor->pwm_channel, pwm_val);
 }
@@ -35,7 +36,6 @@ void tb6612fng_move_rev_single(motor_t *motor, uint16_t pwm_val) {
 	// AIN1 = L, AIN2 = H, STBY = H
 	HAL_GPIO_WritePin(motor->ports[0], motor->pins[0], GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(motor->ports[1], motor->pins[1], GPIO_PIN_SET);
-	HAL_GPIO_WritePin(motor->ports[2], motor->pins[2], GPIO_PIN_SET);
 
 	tb6612fng_drive(motor->pwm_channel, pwm_val);
 }
@@ -43,8 +43,7 @@ void tb6612fng_move_rev_single(motor_t *motor, uint16_t pwm_val) {
 void tb6612fng_stop_single(motor_t *motor) {
 	// AIN1 = L, AIN2 = L, STBY = H, PWM = (Max Duty Cycle)
 	HAL_GPIO_WritePin(motor->ports[0], motor->pins[0], GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(motor->ports[1], motor->pins[1], GPIO_PIN_SET);
-	HAL_GPIO_WritePin(motor->ports[2], motor->pins[2], GPIO_PIN_SET);
+	HAL_GPIO_WritePin(motor->ports[1], motor->pins[1], GPIO_PIN_RESET);
 
 	tb6612fng_drive(motor->pwm_channel, PWM_CCR_MAX);
 }

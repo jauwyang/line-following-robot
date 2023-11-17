@@ -3,12 +3,6 @@
 
 #include <stm32f4xx_hal.h>
 
-static const uint32_t MAX_RPM = 0;
-static const uint32_t MIN_RPM = 0;
-static const uint32_t MAX_PWM = 570;
-static const uint32_t MIN_PWM = 90;
-
-
 typedef enum _direction_e {
 
 	DIR_CW = 0,
@@ -25,12 +19,12 @@ typedef struct _rotation_t {
 
 /**
  * Port-pin sequence is as follows:
- * AIN1, AIN2, STBY (Standby)
+ * AIN1, AIN2, STBY (Standby). Note: Both motors share the same standby pin
  */
 typedef struct _motor_t {
 
-	GPIO_TypeDef* ports[3];
-	uint16_t pins[3];
+	GPIO_TypeDef* ports[2];
+	uint16_t pins[2];
 	uint32_t pwm_channel;
 
 } motor_t;
@@ -39,6 +33,7 @@ typedef struct _motor_t {
 /**
  * User-facing API
  * Assume fwd is CW
+ * PWM frequency set to 25Hz
  */
 
 //>>>> SINGLE MOTOR DRIVE <<<<//
