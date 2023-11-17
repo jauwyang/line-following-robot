@@ -1363,9 +1363,9 @@ extern "C" {
 #define CAN_IT_RQCP2                CAN_IT_TME
 #define INAK_TIMEOUT                CAN_TIMEOUT_VALUE
 #define SLAK_TIMEOUT                CAN_TIMEOUT_VALUE
-#define CAN_TXSTATUS_FAILED         ((uint8_t)0x00U)
-#define CAN_TXSTATUS_OK             ((uint8_t)0x01U)
-#define CAN_TXSTATUS_PENDING        ((uint8_t)0x02U)
+#define CAN_TXSTATUS_FAILED         (0x00U)
+#define CAN_TXSTATUS_OK             (0x01U)
+#define CAN_TXSTATUS_PENDING        (0x02U)
 
 /**
   * @}

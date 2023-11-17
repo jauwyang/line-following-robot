@@ -7,14 +7,14 @@
 /**
  * I2C Multiplexer Addresses
  */
-#define TCA9548A_I2C_ADDR	(uint8_t) (0x70 << 1)
-#define ADDR_CHANNEL_1		(uint8_t) 0x01
-#define ADDR_CHANNEL_2		(uint8_t) 0x02
-#define ADDR_CHANNEL_3		(uint8_t) 0x03
-#define ADDR_CHANNEL_4		(uint8_t) 0x04
-#define ADDR_CHANNEL_5		(uint8_t) 0x05
-#define ADDR_CHANNEL_6		(uint8_t) 0x06
-#define ADDR_CHANNEL_7		(uint8_t) 0x07
+#define TCA9548A_I2C_ADDR	 (0x70 << 1)
+#define ADDR_CHANNEL_1		 0x01
+#define ADDR_CHANNEL_2		 0x02
+#define ADDR_CHANNEL_3		 0x03
+#define ADDR_CHANNEL_4		 0x04
+#define ADDR_CHANNEL_5		 0x05
+#define ADDR_CHANNEL_6		 0x06
+#define ADDR_CHANNEL_7		 0x07
 
 /**
  * User-facing API

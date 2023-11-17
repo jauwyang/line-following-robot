@@ -1,6 +1,9 @@
 #ifndef LINE_FOLLOWING_ROBOT_APDS9960_APDS9960_H
 #define LINE_FOLLOWING_ROBOT_APDS9960_APDS9960_H
 
+#include "color/apds9960_config.h"
+#include "color/tcs9548a.h"
+
 #include <stdint.h>
 
 /**

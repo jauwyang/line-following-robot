@@ -23,6 +23,11 @@
 /* USER CODE BEGIN Includes */
 #include "mg995/mg995.h"
 #include "l298n/l298n.h"
+#include "color/apds9960.h"
+
+#include <string.h>
+#include <stdio.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -109,6 +114,9 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
 
+  apds9960_color_init(APDS9960_I2C_ADDR);
+
+  char msg[128];
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -118,6 +126,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  rgb_cap_t cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
+
+
+	  sprintf(msg, "%hu\r\n %hu\r\n %hu\r\n", cap.red, cap.green, cap.blue);
+	  HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
   }
   /* USER CODE END 3 */
 }
@@ -184,7 +197,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 400000;
+  hi2c1.Init.ClockSpeed = 100000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;

@@ -1244,7 +1244,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c, uint16_t DevAd
           }
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -1266,7 +1266,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c, uint16_t DevAd
           SET_BIT(hi2c->Instance->CR1, I2C_CR1_STOP);
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -1276,7 +1276,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c, uint16_t DevAd
           hi2c->XferCount--;
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -1298,7 +1298,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c, uint16_t DevAd
           CLEAR_BIT(hi2c->Instance->CR1, I2C_CR1_ACK);
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -1317,7 +1317,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c, uint16_t DevAd
           SET_BIT(hi2c->Instance->CR1, I2C_CR1_STOP);
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -1327,7 +1327,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c, uint16_t DevAd
           hi2c->XferCount--;
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -1346,7 +1346,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c, uint16_t DevAd
         }
 
         /* Read data from DR */
-        *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+        *hi2c->pBuffPtr = hi2c->Instance->DR;
 
         /* Increment Buffer pointer */
         hi2c->pBuffPtr++;
@@ -1358,7 +1358,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c, uint16_t DevAd
         if (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BTF) == SET)
         {
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -1582,7 +1582,7 @@ HAL_StatusTypeDef HAL_I2C_Slave_Receive(I2C_HandleTypeDef *hi2c, uint8_t *pData,
       }
 
       /* Read data from DR */
-      *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+      *hi2c->pBuffPtr = hi2c->Instance->DR;
 
       /* Increment Buffer pointer */
       hi2c->pBuffPtr++;
@@ -1594,7 +1594,7 @@ HAL_StatusTypeDef HAL_I2C_Slave_Receive(I2C_HandleTypeDef *hi2c, uint8_t *pData,
       if ((__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BTF) == SET) && (hi2c->XferSize != 0U))
       {
         /* Read data from DR */
-        *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+        *hi2c->pBuffPtr = hi2c->Instance->DR;
 
         /* Increment Buffer pointer */
         hi2c->pBuffPtr++;
@@ -2698,7 +2698,7 @@ HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress,
           }
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -2720,7 +2720,7 @@ HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress,
           SET_BIT(hi2c->Instance->CR1, I2C_CR1_STOP);
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -2730,7 +2730,7 @@ HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress,
           hi2c->XferCount--;
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -2752,7 +2752,7 @@ HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress,
           CLEAR_BIT(hi2c->Instance->CR1, I2C_CR1_ACK);
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -2771,7 +2771,7 @@ HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress,
           SET_BIT(hi2c->Instance->CR1, I2C_CR1_STOP);
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -2781,7 +2781,7 @@ HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress,
           hi2c->XferCount--;
 
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -2800,7 +2800,7 @@ HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress,
         }
 
         /* Read data from DR */
-        *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+        *hi2c->pBuffPtr = hi2c->Instance->DR;
 
         /* Increment Buffer pointer */
         hi2c->pBuffPtr++;
@@ -2812,7 +2812,7 @@ HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress,
         if (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BTF) == SET)
         {
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -5524,7 +5524,7 @@ static void I2C_MasterReceive_RXNE(I2C_HandleTypeDef *hi2c)
     if (tmp > 3U)
     {
       /* Read data from DR */
-      *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+      *hi2c->pBuffPtr = hi2c->Instance->DR;
 
       /* Increment Buffer pointer */
       hi2c->pBuffPtr++;
@@ -5551,7 +5551,7 @@ static void I2C_MasterReceive_RXNE(I2C_HandleTypeDef *hi2c)
         __HAL_I2C_DISABLE_IT(hi2c, I2C_IT_EVT | I2C_IT_BUF | I2C_IT_ERR);
 
         /* Read data from DR */
-        *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+        *hi2c->pBuffPtr = hi2c->Instance->DR;
 
         /* Increment Buffer pointer */
         hi2c->pBuffPtr++;
@@ -5590,7 +5590,7 @@ static void I2C_MasterReceive_RXNE(I2C_HandleTypeDef *hi2c)
         __HAL_I2C_DISABLE_IT(hi2c, I2C_IT_EVT | I2C_IT_BUF | I2C_IT_ERR);
 
         /* Read data from DR */
-        *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+        *hi2c->pBuffPtr = hi2c->Instance->DR;
 
         /* Increment Buffer pointer */
         hi2c->pBuffPtr++;
@@ -5636,7 +5636,7 @@ static void I2C_MasterReceive_BTF(I2C_HandleTypeDef *hi2c)
     __HAL_I2C_DISABLE_IT(hi2c, I2C_IT_BUF);
 
     /* Read data from DR */
-    *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+    *hi2c->pBuffPtr = hi2c->Instance->DR;
 
     /* Increment Buffer pointer */
     hi2c->pBuffPtr++;
@@ -5657,7 +5657,7 @@ static void I2C_MasterReceive_BTF(I2C_HandleTypeDef *hi2c)
     }
 
     /* Read data from DR */
-    *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+    *hi2c->pBuffPtr = hi2c->Instance->DR;
 
     /* Increment Buffer pointer */
     hi2c->pBuffPtr++;
@@ -5689,7 +5689,7 @@ static void I2C_MasterReceive_BTF(I2C_HandleTypeDef *hi2c)
     }
 
     /* Read data from DR */
-    *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+    *hi2c->pBuffPtr = hi2c->Instance->DR;
 
     /* Increment Buffer pointer */
     hi2c->pBuffPtr++;
@@ -5698,7 +5698,7 @@ static void I2C_MasterReceive_BTF(I2C_HandleTypeDef *hi2c)
     hi2c->XferCount--;
 
     /* Read data from DR */
-    *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+    *hi2c->pBuffPtr = hi2c->Instance->DR;
 
     /* Increment Buffer pointer */
     hi2c->pBuffPtr++;
@@ -5734,7 +5734,7 @@ static void I2C_MasterReceive_BTF(I2C_HandleTypeDef *hi2c)
   else
   {
     /* Read data from DR */
-    *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+    *hi2c->pBuffPtr = hi2c->Instance->DR;
 
     /* Increment Buffer pointer */
     hi2c->pBuffPtr++;
@@ -6045,7 +6045,7 @@ static void I2C_SlaveReceive_RXNE(I2C_HandleTypeDef *hi2c)
   if (hi2c->XferCount != 0U)
   {
     /* Read data from DR */
-    *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+    *hi2c->pBuffPtr = hi2c->Instance->DR;
 
     /* Increment Buffer pointer */
     hi2c->pBuffPtr++;
@@ -6083,7 +6083,7 @@ static void I2C_SlaveReceive_BTF(I2C_HandleTypeDef *hi2c)
   if (hi2c->XferCount != 0U)
   {
     /* Read data from DR */
-    *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+    *hi2c->pBuffPtr = hi2c->Instance->DR;
 
     /* Increment Buffer pointer */
     hi2c->pBuffPtr++;
@@ -6233,7 +6233,7 @@ static void I2C_Slave_STOPF(I2C_HandleTypeDef *hi2c)
     if (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BTF) == SET)
     {
       /* Read data from DR */
-      *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+      *hi2c->pBuffPtr = hi2c->Instance->DR;
 
       /* Increment Buffer pointer */
       hi2c->pBuffPtr++;
@@ -6246,7 +6246,7 @@ static void I2C_Slave_STOPF(I2C_HandleTypeDef *hi2c)
     if (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_RXNE) == SET)
     {
       /* Read data from DR */
-      *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+      *hi2c->pBuffPtr = hi2c->Instance->DR;
 
       /* Increment Buffer pointer */
       hi2c->pBuffPtr++;
@@ -6451,7 +6451,7 @@ static void I2C_ITError(I2C_HandleTypeDef *hi2c)
         if (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_RXNE) == SET)
         {
           /* Read data from DR */
-          *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+          *hi2c->pBuffPtr = hi2c->Instance->DR;
 
           /* Increment Buffer pointer */
           hi2c->pBuffPtr++;
@@ -6476,7 +6476,7 @@ static void I2C_ITError(I2C_HandleTypeDef *hi2c)
     if (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_RXNE) == SET)
     {
       /* Read data from DR */
-      *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+      *hi2c->pBuffPtr = hi2c->Instance->DR;
 
       /* Increment Buffer pointer */
       hi2c->pBuffPtr++;
@@ -6498,7 +6498,7 @@ static void I2C_ITError(I2C_HandleTypeDef *hi2c)
     if (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_RXNE) == SET)
     {
       /* Read data from DR */
-      *hi2c->pBuffPtr = (uint8_t)hi2c->Instance->DR;
+      *hi2c->pBuffPtr = hi2c->Instance->DR;
 
       /* Increment Buffer pointer */
       hi2c->pBuffPtr++;

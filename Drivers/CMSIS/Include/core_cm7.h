@@ -2025,11 +2025,11 @@ __STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 {
   if ((int32_t)(IRQn) >= 0)
   {
-    NVIC->IP[((uint32_t)IRQn)]                = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+    NVIC->IP[((uint32_t)IRQn)]                = ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
   }
   else
   {
-    SCB->SHPR[(((uint32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+    SCB->SHPR[(((uint32_t)IRQn) & 0xFUL)-4UL] = ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
   }
 }
 
@@ -2612,7 +2612,7 @@ __STATIC_INLINE uint32_t ITM_SendChar (uint32_t ch)
     {
       __NOP();
     }
-    ITM->PORT[0U].u8 = (uint8_t)ch;
+    ITM->PORT[0U].u8 = ch;
   }
   return (ch);
 }

@@ -1187,7 +1187,7 @@ HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pD
       }
       else
       {
-        huart->Instance->DR = (uint8_t)(*pdata8bits & 0xFFU);
+        huart->Instance->DR = (*pdata8bits & 0xFFU);
         pdata8bits++;
       }
       huart->TxXferCount--;
@@ -1279,11 +1279,11 @@ HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, ui
       {
         if ((huart->Init.WordLength == UART_WORDLENGTH_9B) || ((huart->Init.WordLength == UART_WORDLENGTH_8B) && (huart->Init.Parity == UART_PARITY_NONE)))
         {
-          *pdata8bits = (uint8_t)(huart->Instance->DR & (uint8_t)0x00FF);
+          *pdata8bits = (huart->Instance->DR & 0x00FF);
         }
         else
         {
-          *pdata8bits = (uint8_t)(huart->Instance->DR & (uint8_t)0x007F);
+          *pdata8bits = (huart->Instance->DR & 0x007F);
         }
         pdata8bits++;
       }
@@ -1696,11 +1696,11 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
         {
           if ((huart->Init.WordLength == UART_WORDLENGTH_9B) || ((huart->Init.WordLength == UART_WORDLENGTH_8B) && (huart->Init.Parity == UART_PARITY_NONE)))
           {
-            *pdata8bits = (uint8_t)(huart->Instance->DR & (uint8_t)0x00FF);
+            *pdata8bits = (huart->Instance->DR & 0x00FF);
           }
           else
           {
-            *pdata8bits = (uint8_t)(huart->Instance->DR & (uint8_t)0x007F);
+            *pdata8bits = (huart->Instance->DR & 0x007F);
           }
 
           pdata8bits++;
@@ -3524,7 +3524,7 @@ static HAL_StatusTypeDef UART_Transmit_IT(UART_HandleTypeDef *huart)
     }
     else
     {
-      huart->Instance->DR = (uint8_t)(*huart->pTxBuffPtr++ & (uint8_t)0x00FF);
+      huart->Instance->DR = (*huart->pTxBuffPtr++ & 0x00FF);
     }
 
     if (--huart->TxXferCount == 0U)
@@ -3596,11 +3596,11 @@ static HAL_StatusTypeDef UART_Receive_IT(UART_HandleTypeDef *huart)
 
       if ((huart->Init.WordLength == UART_WORDLENGTH_9B) || ((huart->Init.WordLength == UART_WORDLENGTH_8B) && (huart->Init.Parity == UART_PARITY_NONE)))
       {
-        *pdata8bits = (uint8_t)(huart->Instance->DR & (uint8_t)0x00FF);
+        *pdata8bits = (huart->Instance->DR & 0x00FF);
       }
       else
       {
-        *pdata8bits = (uint8_t)(huart->Instance->DR & (uint8_t)0x007F);
+        *pdata8bits = (huart->Instance->DR & 0x007F);
       }
       huart->pRxBuffPtr += 1U;
     }

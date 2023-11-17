@@ -2402,7 +2402,7 @@ __STATIC_INLINE uint32_t LL_USART_DMA_GetRegAddr(USART_TypeDef *USARTx)
   */
 __STATIC_INLINE uint8_t LL_USART_ReceiveData8(USART_TypeDef *USARTx)
 {
-  return (uint8_t)(READ_BIT(USARTx->DR, USART_DR_DR));
+  return (READ_BIT(USARTx->DR, USART_DR_DR));
 }
 
 /**
