@@ -181,9 +181,9 @@ typedef struct
 /** @defgroup FLASHEx_Option_Bytes_Read_Protection FLASH Option Bytes Read Protection
   * @{
   */
-#define OB_RDP_LEVEL_0   ((uint8_t)0xAA)
-#define OB_RDP_LEVEL_1   ((uint8_t)0x55)
-#define OB_RDP_LEVEL_2   ((uint8_t)0xCC) /*!< Warning: When enabling read protection level 2 
+#define OB_RDP_LEVEL_0   (0xAA)
+#define OB_RDP_LEVEL_1   (0x55)
+#define OB_RDP_LEVEL_2   (0xCC) /*!< Warning: When enabling read protection level 2 
                                               it s no more possible to go back to level 1 or 0 */
 /**
   * @}
@@ -192,8 +192,8 @@ typedef struct
 /** @defgroup FLASHEx_Option_Bytes_IWatchdog FLASH Option Bytes IWatchdog
   * @{
   */ 
-#define OB_IWDG_SW                     ((uint8_t)0x20)  /*!< Software IWDG selected */
-#define OB_IWDG_HW                     ((uint8_t)0x00)  /*!< Hardware IWDG selected */
+#define OB_IWDG_SW                     (0x20)  /*!< Software IWDG selected */
+#define OB_IWDG_HW                     (0x00)  /*!< Hardware IWDG selected */
 /**
   * @}
   */ 
@@ -201,8 +201,8 @@ typedef struct
 /** @defgroup FLASHEx_Option_Bytes_nRST_STOP FLASH Option Bytes nRST_STOP
   * @{
   */ 
-#define OB_STOP_NO_RST                 ((uint8_t)0x40) /*!< No reset generated when entering in STOP */
-#define OB_STOP_RST                    ((uint8_t)0x00) /*!< Reset generated when entering in STOP    */
+#define OB_STOP_NO_RST                 (0x40) /*!< No reset generated when entering in STOP */
+#define OB_STOP_RST                    (0x00) /*!< Reset generated when entering in STOP    */
 /**
   * @}
   */ 
@@ -211,8 +211,8 @@ typedef struct
 /** @defgroup FLASHEx_Option_Bytes_nRST_STDBY FLASH Option Bytes nRST_STDBY
   * @{
   */ 
-#define OB_STDBY_NO_RST                ((uint8_t)0x80) /*!< No reset generated when entering in STANDBY */
-#define OB_STDBY_RST                   ((uint8_t)0x00) /*!< Reset generated when entering in STANDBY    */
+#define OB_STDBY_NO_RST                (0x80) /*!< No reset generated when entering in STANDBY */
+#define OB_STDBY_RST                   (0x00) /*!< Reset generated when entering in STANDBY    */
 /**
   * @}
   */    
@@ -220,10 +220,10 @@ typedef struct
 /** @defgroup FLASHEx_BOR_Reset_Level FLASH BOR Reset Level
   * @{
   */  
-#define OB_BOR_LEVEL3          ((uint8_t)0x00)  /*!< Supply voltage ranges from 2.70 to 3.60 V */
-#define OB_BOR_LEVEL2          ((uint8_t)0x04)  /*!< Supply voltage ranges from 2.40 to 2.70 V */
-#define OB_BOR_LEVEL1          ((uint8_t)0x08)  /*!< Supply voltage ranges from 2.10 to 2.40 V */
-#define OB_BOR_OFF             ((uint8_t)0x0C)  /*!< Supply voltage ranges from 1.62 to 2.10 V */
+#define OB_BOR_LEVEL3          (0x00)  /*!< Supply voltage ranges from 2.70 to 3.60 V */
+#define OB_BOR_LEVEL2          (0x04)  /*!< Supply voltage ranges from 2.40 to 2.70 V */
+#define OB_BOR_LEVEL1          (0x08)  /*!< Supply voltage ranges from 2.10 to 2.40 V */
+#define OB_BOR_OFF             (0x0C)  /*!< Supply voltage ranges from 1.62 to 2.10 V */
 /**
   * @}
   */
@@ -683,8 +683,8 @@ typedef struct
   */
 #if defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx)|| defined(STM32F439xx) ||\
     defined(STM32F469xx) || defined(STM32F479xx) 
-#define OB_DUAL_BOOT_ENABLE   ((uint8_t)0x10) /*!< Dual Bank Boot Enable                             */
-#define OB_DUAL_BOOT_DISABLE  ((uint8_t)0x00) /*!< Dual Bank Boot Disable, always boot on User Flash */
+#define OB_DUAL_BOOT_ENABLE   (0x10) /*!< Dual Bank Boot Enable                             */
+#define OB_DUAL_BOOT_DISABLE  (0x00) /*!< Dual Bank Boot Disable, always boot on User Flash */
 #endif /* STM32F427xx || STM32F437xx || STM32F429xx|| STM32F439xx || STM32F469xx || STM32F479xx */
 /**
   * @}
@@ -698,8 +698,8 @@ typedef struct
     defined(STM32F410Rx) || defined(STM32F411xE) || defined(STM32F446xx) || defined(STM32F469xx) ||\
     defined(STM32F479xx) || defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) ||\
     defined(STM32F412Cx) || defined(STM32F413xx) || defined(STM32F423xx)
-#define OB_PCROP_DESELECTED     ((uint8_t)0x00) /*!< Disabled PcROP, nWPRi bits used for Write Protection on sector i */
-#define OB_PCROP_SELECTED       ((uint8_t)0x80) /*!< Enable PcROP, nWPRi bits used for PCRoP Protection on sector i   */
+#define OB_PCROP_DESELECTED     (0x00) /*!< Disabled PcROP, nWPRi bits used for Write Protection on sector i */
+#define OB_PCROP_SELECTED       (0x80) /*!< Enable PcROP, nWPRi bits used for PCRoP Protection on sector i   */
 #endif /* STM32F427xx || STM32F437xx || STM32F429xx || STM32F439xx || STM32F401xC || STM32F401xE ||\
           STM32F410xx || STM32F411xE || STM32F446xx || STM32F469xx || STM32F479xx || STM32F412Zx ||\
           STM32F412Vx || STM32F412Rx || STM32F412Cx || STM32F413xx || STM32F423xx */

@@ -6,8 +6,8 @@
  * ANGLE_yyy: Servo is half-turn (spins from 0 to 180 degrees)
  * MS_yyy: The pulse width (ms) that produces min and max rotation
  */
-#define ANGLE_MIN	(uint8_t) 0
-#define ANGLE_MAX	(uint8_t) 180
+#define ANGLE_MIN	 0
+#define ANGLE_MAX	 180
 #define MS_MIN		(double) 0.5
 #define MS_MAX		(double) 2.3
 

@@ -807,7 +807,7 @@ __packed struct  __iar_u32 { uint32_t v; };
   {
     uint32_t res;
     __ASM("LDRBT %0, [%1]" : "=r" (res) : "r" (addr) : "memory");
-    return ((uint8_t)res);
+    return (res);
   }
 
   __IAR_FT uint16_t __LDRHT(volatile uint16_t *addr)
@@ -849,7 +849,7 @@ __packed struct  __iar_u32 { uint32_t v; };
   {
     uint32_t res;
     __ASM volatile ("LDAB %0, [%1]" : "=r" (res) : "r" (ptr) : "memory");
-    return ((uint8_t)res);
+    return (res);
   }
 
   __IAR_FT uint16_t __LDAH(volatile uint16_t *ptr)
@@ -885,7 +885,7 @@ __packed struct  __iar_u32 { uint32_t v; };
   {
     uint32_t res;
     __ASM volatile ("LDAEXB %0, [%1]" : "=r" (res) : "r" (ptr) : "memory");
-    return ((uint8_t)res);
+    return (res);
   }
 
   __IAR_FT uint16_t __LDAEXH(volatile uint16_t *ptr)

@@ -24,7 +24,7 @@ void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorR
 void followLineToTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	followLine(motorLeft, motorRight);
 
-	uint8_t middleSensorPosition = (uint8_t)(ceil(SENSOR_COUNT / 2));
+	uint8_t middleSensorPosition = (ceil(SENSOR_COUNT / 2));
 
 	// transition state condition (target detected & is lined up to its center)
 	if (getPositionOfColourSource(BLUE) == middleSensorPosition){
@@ -67,7 +67,7 @@ void offTrackToSafeZoneDrive(enum RobotSequence *currentState, motor_t *motorLef
 	uint16_t motorPWM = 1;	// TODO: Change later
 	l298n_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
 
-	uint8_t middleSensorPosition = (uint8_t)(ceil(SENSOR_COUNT / 2));
+	uint8_t middleSensorPosition = (ceil(SENSOR_COUNT / 2));
 
 
 	// transition state condition (it reached the safe zone & is line up at robot's center)
@@ -108,7 +108,7 @@ void driveToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t 
 	uint16_t motorPWM = 0;	// TODO: Change later
 	l298n_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
 
-	uint8_t middleSensorPosition = (uint8_t)(ceil(SENSOR_COUNT / 2));
+	uint8_t middleSensorPosition = (ceil(SENSOR_COUNT / 2));
 
 	// transition state condition (it detects the path again)
 	// Drive forward until middle sensor detects red line

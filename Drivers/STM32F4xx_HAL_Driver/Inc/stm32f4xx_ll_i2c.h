@@ -328,21 +328,21 @@ typedef struct
   * @param  __ADDRESS__ This parameter must be a value of a 10-Bits slave address.
   * @retval Value between Min_Data=0x00 and Max_Data=0xFF
   */
-#define __LL_I2C_10BIT_ADDRESS(__ADDRESS__)                             ((uint8_t)((uint16_t)((__ADDRESS__) & (uint16_t)(0x00FF))))
+#define __LL_I2C_10BIT_ADDRESS(__ADDRESS__)                             (((uint16_t)((__ADDRESS__) & (uint16_t)(0x00FF))))
 
 /**
   * @brief  Convert a 10-Bits address to a 10-Bits header with Write direction.
   * @param  __ADDRESS__ This parameter must be a value of a 10-Bits slave address.
   * @retval Value between Min_Data=0xF0 and Max_Data=0xF6
   */
-#define __LL_I2C_10BIT_HEADER_WRITE(__ADDRESS__)                        ((uint8_t)((uint16_t)((uint16_t)(((uint16_t)((__ADDRESS__) & (uint16_t)(0x0300))) >> 7) | (uint16_t)(0xF0))))
+#define __LL_I2C_10BIT_HEADER_WRITE(__ADDRESS__)                        (((uint16_t)((uint16_t)(((uint16_t)((__ADDRESS__) & (uint16_t)(0x0300))) >> 7) | (uint16_t)(0xF0))))
 
 /**
   * @brief  Convert a 10-Bits address to a 10-Bits header with Read direction.
   * @param  __ADDRESS__ This parameter must be a value of a 10-Bits slave address.
   * @retval Value between Min_Data=0xF1 and Max_Data=0xF7
   */
-#define __LL_I2C_10BIT_HEADER_READ(__ADDRESS__)                         ((uint8_t)((uint16_t)((uint16_t)(((uint16_t)((__ADDRESS__) & (uint16_t)(0x0300))) >> 7) | (uint16_t)(0xF1))))
+#define __LL_I2C_10BIT_HEADER_READ(__ADDRESS__)                         (((uint16_t)((uint16_t)(((uint16_t)((__ADDRESS__) & (uint16_t)(0x0300))) >> 7) | (uint16_t)(0xF1))))
 
 /**
   * @}
@@ -1834,7 +1834,7 @@ __STATIC_INLINE uint32_t LL_I2C_GetSMBusPEC(I2C_TypeDef *I2Cx)
   */
 __STATIC_INLINE uint8_t LL_I2C_ReceiveData8(I2C_TypeDef *I2Cx)
 {
-  return (uint8_t)(READ_BIT(I2Cx->DR, I2C_DR_DR));
+  return (READ_BIT(I2Cx->DR, I2C_DR_DR));
 }
 
 /**

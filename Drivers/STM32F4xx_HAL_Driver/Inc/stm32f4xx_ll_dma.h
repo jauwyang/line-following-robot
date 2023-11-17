@@ -45,14 +45,14 @@ extern "C" {
 /* Array used to get the DMA stream register offset versus stream index LL_DMA_STREAM_x */
 static const uint8_t STREAM_OFFSET_TAB[] =
 {
-  (uint8_t)(DMA1_Stream0_BASE - DMA1_BASE),
-  (uint8_t)(DMA1_Stream1_BASE - DMA1_BASE),
-  (uint8_t)(DMA1_Stream2_BASE - DMA1_BASE),
-  (uint8_t)(DMA1_Stream3_BASE - DMA1_BASE),
-  (uint8_t)(DMA1_Stream4_BASE - DMA1_BASE),
-  (uint8_t)(DMA1_Stream5_BASE - DMA1_BASE),
-  (uint8_t)(DMA1_Stream6_BASE - DMA1_BASE),
-  (uint8_t)(DMA1_Stream7_BASE - DMA1_BASE)
+  (DMA1_Stream0_BASE - DMA1_BASE),
+  (DMA1_Stream1_BASE - DMA1_BASE),
+  (DMA1_Stream2_BASE - DMA1_BASE),
+  (DMA1_Stream3_BASE - DMA1_BASE),
+  (DMA1_Stream4_BASE - DMA1_BASE),
+  (DMA1_Stream5_BASE - DMA1_BASE),
+  (DMA1_Stream6_BASE - DMA1_BASE),
+  (DMA1_Stream7_BASE - DMA1_BASE)
 };
 
 /**

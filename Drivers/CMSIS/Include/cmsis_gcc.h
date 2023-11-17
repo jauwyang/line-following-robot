@@ -1008,7 +1008,7 @@ __STATIC_FORCEINLINE uint32_t __RBIT(uint32_t value)
   \param [in]  value  Value to count the leading zeros
   \return             number of leading zeros in value
  */
-#define __CLZ             (uint8_t)__builtin_clz
+#define __CLZ             __builtin_clz
 
 
 #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
@@ -1033,7 +1033,7 @@ __STATIC_FORCEINLINE uint8_t __LDREXB(volatile uint8_t *addr)
     */
    __ASM volatile ("ldrexb %0, [%1]" : "=r" (result) : "r" (addr) : "memory" );
 #endif
-   return ((uint8_t) result);    /* Add explicit type cast here */
+   return ( result);    /* Add explicit type cast here */
 }
 
 
@@ -1209,7 +1209,7 @@ __STATIC_FORCEINLINE uint8_t __LDRBT(volatile uint8_t *ptr)
     */
    __ASM volatile ("ldrbt %0, [%1]" : "=r" (result) : "r" (ptr) : "memory" );
 #endif
-   return ((uint8_t) result);    /* Add explicit type cast here */
+   return ( result);    /* Add explicit type cast here */
 }
 
 
@@ -1356,7 +1356,7 @@ __STATIC_FORCEINLINE uint8_t __LDAB(volatile uint8_t *ptr)
     uint32_t result;
 
    __ASM volatile ("ldab %0, %1" : "=r" (result) : "Q" (*ptr) );
-   return ((uint8_t) result);
+   return ( result);
 }
 
 
@@ -1437,7 +1437,7 @@ __STATIC_FORCEINLINE uint8_t __LDAEXB(volatile uint8_t *ptr)
     uint32_t result;
 
    __ASM volatile ("ldaexb %0, %1" : "=r" (result) : "Q" (*ptr) );
-   return ((uint8_t) result);
+   return ( result);
 }
 
 
