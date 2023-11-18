@@ -173,7 +173,7 @@ typedef struct
   *         The value of this parameter depend on device used within the same series
   * @retval none
   */ 
-#define __HAL_FLASH_SET_LATENCY(__LATENCY__) (*(__IO uint8_t *)ACR_BYTE0_ADDRESS = (__LATENCY__))
+#define __HAL_FLASH_SET_LATENCY(__LATENCY__) (*(__IO uint8_t *)ACR_BYTE0_ADDRESS = (uint8_t)(__LATENCY__))
 
 /**
   * @brief  Get the FLASH Latency.

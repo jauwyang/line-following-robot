@@ -12,7 +12,7 @@
 
 void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
 	uint16_t motorPWM = 1; // TODO: Change later (not max?)
-	l298n_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
+	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
 
 	// transition state condition (starting line detected)
 	uint32_t requiredSensorColourMatches = 4;
@@ -42,7 +42,7 @@ void pickup(enum RobotSequence *currentState){
 
 void backupFromTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	uint16_t motorPWM = 1;	// TODO: Change later
-	l298n_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
+	tb6612fng_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
 	
 	// transition state condition (assume it has finished backing up)
 	*currentState = ROTATE_TO_SAFE_ZONE;
@@ -56,7 +56,7 @@ void rotateToSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, moto
 	};
 
 	// Rotate 90 degrees CCW
-	l298n_rotate(motorLeft, motorRight, rotation_params);
+	tb6612fng_rotate(motorLeft, motorRight, rotation_params);
 
 	// transition state condition (assumed it has rotated)
 	*currentState = OFF_TRACK_TO_SAFE_ZONE_DRIVE;
@@ -65,7 +65,7 @@ void rotateToSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, moto
 void offTrackToSafeZoneDrive(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	//drive forward
 	uint16_t motorPWM = 1;	// TODO: Change later
-	l298n_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
+	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
 
 	uint8_t middleSensorPosition = (ceil(SENSOR_COUNT / 2));
 
@@ -87,7 +87,7 @@ void dropOff(enum RobotSequence *currentState){
 void backUpFromSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	//reverse backwards
 	uint16_t motorPWM = 1;	// TODO: Change later
-	l298n_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
+	tb6612fng_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
 
 	// transition state condition (assume it has backed up)
 	*currentState = ROTATE_TO_TRACK;
@@ -100,13 +100,13 @@ void rotateToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t
 	};
 
 	// Rotate 180 degrees CCW
-	l298n_rotate(motorLeft, motorRight, rotation_params);
+	tb6612fng_rotate(motorLeft, motorRight, rotation_params);
 	*currentState = DRIVE_TO_TRACK;
 }
 
 void driveToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
 	uint16_t motorPWM = 0;	// TODO: Change later
-	l298n_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
+	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
 
 	uint8_t middleSensorPosition = (ceil(SENSOR_COUNT / 2));
 
@@ -129,7 +129,7 @@ void followLineToStart(enum RobotSequence *currentState, motor_t *motorLeft, mot
 
 void end(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	// Stop the motors
-	l298n_stop(motorLeft, motorRight);
+	tb6612fng_stop(motorLeft, motorRight);
 }
 
 void stateMachine(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){

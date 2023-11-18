@@ -1,8 +1,0 @@
-../Core/Src/l298n/l298n.c:9:13:l298n_drive	16	static
-../Core/Src/l298n/l298n.c:26:6:l298n_move_fwd_single	16	static
-../Core/Src/l298n/l298n.c:33:6:l298n_move_rev_single	16	static
-../Core/Src/l298n/l298n.c:40:6:l298n_stop_single	16	static
-../Core/Src/l298n/l298n.c:49:6:l298n_move_fwd	24	static
-../Core/Src/l298n/l298n.c:54:6:l298n_move_rev	24	static
-../Core/Src/l298n/l298n.c:59:6:l298n_stop	16	static
-../Core/Src/l298n/l298n.c:64:6:l298n_rotate	24	static

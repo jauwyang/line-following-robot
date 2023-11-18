@@ -13,7 +13,7 @@
 
 extern TIM_HandleTypeDef htim2;
 
-static void mg995_set_angle(uint8_t angle) {
+void mg995_set_angle(uint8_t angle) {
 	// Constrain input angle
 	if (angle > ANGLE_MAX) {
 		angle = ANGLE_MAX;
@@ -38,20 +38,20 @@ void mg995_close_claw(void) {
 	mg995_set_angle(ANGLE_MIN);
 }
 
-void mg995_open_claw_delay(const uint32_t delay) {
+void mg995_open_claw_delay(const uint8_t p_angle, const uint32_t delay) {
 	uint8_t angle = ANGLE_MIN;
-	while (angle < ANGLE_MAX) {
+	while (angle < p_angle) {
 		mg995_set_angle(angle);
 		angle++;
 		HAL_Delay(delay);
 	}
 }
 
-void mg995_close_claw_delay(const uint32_t delay) {
+void mg995_close_claw_delay(const uint8_t p_angle, const uint32_t delay) {
 	uint8_t angle = ANGLE_MAX;
-	while (angle > ANGLE_MIN) {
+	while (angle > p_angle) {
 		mg995_set_angle(angle);
 		angle--;
-		HAL_Delay(delay);
++		HAL_Delay(delay);
 	}
 }

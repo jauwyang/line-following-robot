@@ -112,8 +112,8 @@ typedef struct
 /** @defgroup PWR_SLEEP_mode_entry PWR SLEEP mode entry
   * @{
   */
-#define PWR_SLEEPENTRY_WFI              (0x01)
-#define PWR_SLEEPENTRY_WFE              (0x02)
+#define PWR_SLEEPENTRY_WFI              ((uint8_t)0x01)
+#define PWR_SLEEPENTRY_WFE              ((uint8_t)0x02)
 /**
   * @}
   */
@@ -121,8 +121,8 @@ typedef struct
 /** @defgroup PWR_STOP_mode_entry PWR STOP mode entry
   * @{
   */
-#define PWR_STOPENTRY_WFI               (0x01)
-#define PWR_STOPENTRY_WFE               (0x02)
+#define PWR_STOPENTRY_WFI               ((uint8_t)0x01)
+#define PWR_STOPENTRY_WFE               ((uint8_t)0x02)
 /**
   * @}
   */

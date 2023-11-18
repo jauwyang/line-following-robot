@@ -1,4 +1,4 @@
-../Core/Src/mg995/mg995.c:16:13:mg995_set_angle	2
+../Core/Src/mg995/mg995.c:16:6:mg995_set_angle	2
 ../Core/Src/mg995/mg995.c:30:6:mg995_open_claw	1
 ../Core/Src/mg995/mg995.c:37:6:mg995_close_claw	1
 ../Core/Src/mg995/mg995.c:41:6:mg995_open_claw_delay	2

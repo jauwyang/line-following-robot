@@ -22,8 +22,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "mg995/mg995.h"
-#include "l298n/l298n.h"
 #include "color/apds9960.h"
+
+#include "state_machine.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -70,6 +71,55 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+char msg[256];
+
+void calibrate_system(motor_t *motor_left, motor_t *motor_right) {
+	// DC Motors
+	/*tb6612fng_move_fwd(motor_left, motor_right, 150, 150);
+	HAL_Delay(1500);
+	tb6612fng_stop(motor_left, motor_right);
+	HAL_Delay(1500);
+	tb6612fng_move_rev(motor_left, motor_right, 150, 150);
+	HAL_Delay(1500);
+	tb6612fng_stop(motor_left, motor_right);
+	HAL_Delay(1500);*/
+
+	// Servo Motors
+	mg995_open_claw_delay(50, 5);
+	HAL_Delay(2000);
+	mg995_close_claw_delay(140, 5);
+	HAL_Delay(2000);
+
+	// Read Colour Sensors
+
+	// Colours
+	// Wood:
+	// Blue:
+	// Green: 16 - 22, 20 - 50, 9 - 30
+	// Red:
+
+
+	/*rgb_cap_t cap = {0};
+	uint16_t red_reference = 1;
+	uint16_t green_reference = 1;
+	uint16_t blue_reference = 1;
+	for (uint8_t i = 0; i < 5; i++) {
+		tcs9548a_select_channel(i);
+		cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
+		sprintf(msg, "Sensor: %hu { R: %hu G: %hu B: %hu\r\n", i, cap.red/red_reference, cap.green/green_reference, cap.blue/blue_reference);
+		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+		HAL_Delay(1000);
+	}*/
+}
+
+void setup_color_sensors(void) {
+	for (uint8_t i = 0; i < 5; i++) {
+		tcs9548a_select_channel(i);
+		apds9960_color_init(APDS9960_I2C_ADDR);
+	}
+}
+
+
 
 /* USER CODE END 0 */
 
@@ -107,16 +157,39 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  /**
+   * Device Initializations
+   */
+
   // MG995 Servo Motor
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 
-  // L298N Motor Driver
+  // TB6612FNG Motor Driver
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
 
-  apds9960_color_init(APDS9960_I2C_ADDR);
+  motor_t lm = {
+		  .ports = { GPIOA, GPIOA },
+		  .pins = { GPIO_PIN_5, GPIO_PIN_6 },
+		  .pwm_channel = TIM_CHANNEL_1
+  };
 
-  char msg[128];
+  motor_t rm = {
+		  .ports = { GPIOC, GPIOC },
+		  .pins = { GPIO_PIN_6, GPIO_PIN_7 },
+		  .pwm_channel = TIM_CHANNEL_2
+  };
+
+  // Keep STBY pin high
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+
+  // APDS9960 Colour Sensors
+  setup_color_sensors();
+
+
+  // Initialize robot sequence (state)
+  enum RobotSequence currentState = START;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -126,11 +199,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  rgb_cap_t cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
-
-
-	  sprintf(msg, "%hu\r\n %hu\r\n %hu\r\n", cap.red, cap.green, cap.blue);
-	  HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+	  calibrate_system(&lm, &rm);
+	  //stateMachine(&currentState, &lm, &rm);
   }
   /* USER CODE END 3 */
 }
@@ -197,7 +267,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.ClockSpeed = 400000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -403,13 +473,23 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4|GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12|GPIO_PIN_13, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PC4 PC5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
+  /*Configure GPIO pins : PA5 PA6 PA7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PC4 PC5 PC6 PC7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

@@ -1,6 +1,6 @@
 #include "colour_sensor.h"
-#include <stdbool.h>
-#include <math.h>
+
+#include "color/apds9960.h"
 #include <stdio.h>
 
 
@@ -37,9 +37,15 @@ bool isBlue(uint32_t rawColourFrequency){
 	return false;
 }
 
-
+// This function assumes that the
 void readRawColourSensors(uint32_t rawSensorReadings[]){
-	
+	rgb_cap_t cap = {0};
+	for (uint8_t i = 0; i < 5; i++) {
+		tcs9548a_select_channel(i);
+		HAL_Delay(5);
+		cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
+
+	}
 }
 
 
@@ -74,6 +80,7 @@ void processColourSensorReadings(bool processedSensorReadings[], uint32_t rawSen
 			break;
 		default:
 			printf("UNDEFINED COLOUR");
+			break;
 	}
 }
 

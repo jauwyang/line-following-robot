@@ -114,16 +114,16 @@ static const uint8_t SHIFT_TAB_OISx[] =
 #define TIM11_OR_RMP_MASK  (TIM_OR_TI1_RMP << TIMx_OR_RMP_SHIFT)
 
 /* Mask used to set the TDG[x:0] of the DTG bits of the TIMx_BDTR register */
-#define DT_DELAY_1 (0x7F)
-#define DT_DELAY_2 (0x3F)
-#define DT_DELAY_3 (0x1F)
-#define DT_DELAY_4 (0x1F)
+#define DT_DELAY_1 ((uint8_t)0x7F)
+#define DT_DELAY_2 ((uint8_t)0x3F)
+#define DT_DELAY_3 ((uint8_t)0x1F)
+#define DT_DELAY_4 ((uint8_t)0x1F)
 
 /* Mask used to set the DTG[7:5] bits of the DTG bits of the TIMx_BDTR register */
-#define DT_RANGE_1 (0x00)
-#define DT_RANGE_2 (0x80)
-#define DT_RANGE_3 (0xC0)
-#define DT_RANGE_4 (0xE0)
+#define DT_RANGE_1 ((uint8_t)0x00)
+#define DT_RANGE_2 ((uint8_t)0x80)
+#define DT_RANGE_3 ((uint8_t)0xC0)
+#define DT_RANGE_4 ((uint8_t)0xE0)
 
 
 /**
@@ -1024,16 +1024,16 @@ typedef struct
   */
 #define __LL_TIM_CALC_DEADTIME(__TIMCLK__, __CKD__, __DT__)  \
   ( (((uint64_t)((__DT__)*1000U)) < ((DT_DELAY_1+1U) * TIM_CALC_DTS((__TIMCLK__), (__CKD__))))    ?  \
-    (((uint64_t)((__DT__)*1000U) / TIM_CALC_DTS((__TIMCLK__), (__CKD__)))  & DT_DELAY_1) :      \
+    (uint8_t)(((uint64_t)((__DT__)*1000U) / TIM_CALC_DTS((__TIMCLK__), (__CKD__)))  & DT_DELAY_1) :      \
     (((uint64_t)((__DT__)*1000U)) < ((64U + (DT_DELAY_2+1U)) * 2U * TIM_CALC_DTS((__TIMCLK__), (__CKD__))))  ?  \
-    (DT_RANGE_2 | ((((((uint64_t)((__DT__)*1000U))/ TIM_CALC_DTS((__TIMCLK__),   \
-                                                 (__CKD__))) >> 1U) -  64) & DT_DELAY_2)) :\
+    (uint8_t)(DT_RANGE_2 | ((uint8_t)((uint8_t)((((uint64_t)((__DT__)*1000U))/ TIM_CALC_DTS((__TIMCLK__),   \
+                                                 (__CKD__))) >> 1U) - (uint8_t) 64) & DT_DELAY_2)) :\
     (((uint64_t)((__DT__)*1000U)) < ((32U + (DT_DELAY_3+1U)) * 8U * TIM_CALC_DTS((__TIMCLK__), (__CKD__))))  ?  \
-    (DT_RANGE_3 | (((((((uint64_t)(__DT__)*1000U))/ TIM_CALC_DTS((__TIMCLK__),  \
-                                                 (__CKD__))) >> 3U) -  32) & DT_DELAY_3)) :\
+    (uint8_t)(DT_RANGE_3 | ((uint8_t)((uint8_t)(((((uint64_t)(__DT__)*1000U))/ TIM_CALC_DTS((__TIMCLK__),  \
+                                                 (__CKD__))) >> 3U) - (uint8_t) 32) & DT_DELAY_3)) :\
     (((uint64_t)((__DT__)*1000U)) < ((32U + (DT_DELAY_4+1U)) * 16U * TIM_CALC_DTS((__TIMCLK__), (__CKD__)))) ?  \
-    (DT_RANGE_4 | (((((((uint64_t)(__DT__)*1000U))/ TIM_CALC_DTS((__TIMCLK__),  \
-                                                 (__CKD__))) >> 4U) -  32) & DT_DELAY_4)) :\
+    (uint8_t)(DT_RANGE_4 | ((uint8_t)((uint8_t)(((((uint64_t)(__DT__)*1000U))/ TIM_CALC_DTS((__TIMCLK__),  \
+                                                 (__CKD__))) >> 4U) - (uint8_t) 32) & DT_DELAY_4)) :\
     0U)
 
 /**

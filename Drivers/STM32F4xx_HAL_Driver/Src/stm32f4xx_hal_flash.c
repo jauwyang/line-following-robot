@@ -169,7 +169,7 @@ HAL_StatusTypeDef HAL_FLASH_Program(uint32_t TypeProgram, uint32_t Address, uint
     if(TypeProgram == FLASH_TYPEPROGRAM_BYTE)
     {
       /*Program byte (8-bit) at a specified address.*/
-      FLASH_Program_Byte(Address,  Data);
+      FLASH_Program_Byte(Address, (uint8_t) Data);
     }
     else if(TypeProgram == FLASH_TYPEPROGRAM_HALFWORD)
     {
@@ -231,7 +231,7 @@ HAL_StatusTypeDef HAL_FLASH_Program_IT(uint32_t TypeProgram, uint32_t Address, u
   if(TypeProgram == FLASH_TYPEPROGRAM_BYTE)
   {
     /*Program byte (8-bit) at a specified address.*/
-      FLASH_Program_Byte(Address,  Data);
+      FLASH_Program_Byte(Address, (uint8_t) Data);
   }
   else if(TypeProgram == FLASH_TYPEPROGRAM_HALFWORD)
   {

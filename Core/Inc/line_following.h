@@ -1,7 +1,7 @@
 #ifndef LINE_FOLLOWING_H
 #define LINE_FOLLOWING_H
 
-#include "l298n/l298n.h"
+#include "tb6612fng/tb6612fng.h"
 
 double getPathLinePosition(void);
 double PIDAlgorithm(double currentLinePosition);

@@ -908,7 +908,7 @@ __STATIC_FORCEINLINE uint32_t __ROR(uint32_t op1, uint32_t op2)
   \param [in]  value  Value to count the leading zeros
   \return             number of leading zeros in value
  */
-#define __CLZ             __builtin_clz
+#define __CLZ             (uint8_t)__builtin_clz
 
 
 #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
@@ -921,7 +921,7 @@ __STATIC_FORCEINLINE uint32_t __ROR(uint32_t op1, uint32_t op2)
   \param [in]    ptr  Pointer to data
   \return             value of type uint8_t at (*ptr)
  */
-#define __LDREXB        __builtin_arm_ldrex
+#define __LDREXB        (uint8_t)__builtin_arm_ldrex
 
 
 /**
@@ -1038,7 +1038,7 @@ __STATIC_FORCEINLINE uint8_t __LDRBT(volatile uint8_t *ptr)
   uint32_t result;
 
   __ASM volatile ("ldrbt %0, %1" : "=r" (result) : "Q" (*ptr) );
-  return ( result);    /* Add explicit type cast here */
+  return ((uint8_t) result);    /* Add explicit type cast here */
 }
 
 
@@ -1178,7 +1178,7 @@ __STATIC_FORCEINLINE uint8_t __LDAB(volatile uint8_t *ptr)
   uint32_t result;
 
   __ASM volatile ("ldab %0, %1" : "=r" (result) : "Q" (*ptr) );
-  return ( result);
+  return ((uint8_t) result);
 }
 
 
@@ -1254,7 +1254,7 @@ __STATIC_FORCEINLINE void __STL(uint32_t value, volatile uint32_t *ptr)
   \param [in]    ptr  Pointer to data
   \return             value of type uint8_t at (*ptr)
  */
-#define     __LDAEXB                 __builtin_arm_ldaex
+#define     __LDAEXB                 (uint8_t)__builtin_arm_ldaex
 
 
 /**

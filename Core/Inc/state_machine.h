@@ -1,7 +1,7 @@
 #ifndef STATE_MACHINE_H
 #define STATE_MACHINE_H
 
-#include "l298n/l298n.h"
+#include "tb6612fng/tb6612fng.h"
 
 enum RobotSequence {
     START,

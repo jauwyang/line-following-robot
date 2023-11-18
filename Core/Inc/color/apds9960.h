@@ -35,4 +35,5 @@ void apds9960_color_init(uint8_t i2c_addr);
 uint16_t apds9960_read_rgb_single(uint8_t i2c_addr, color_e color);
 rgb_cap_t apds9960_read_rgb(uint8_t i2c_addr);
 
+
 #endif // LINE_FOLLOWING_ROBOT_APDS9960_APDS9960_H

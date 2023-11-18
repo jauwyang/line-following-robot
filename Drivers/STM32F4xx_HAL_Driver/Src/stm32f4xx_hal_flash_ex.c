@@ -179,7 +179,7 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t
     if (pEraseInit->TypeErase == FLASH_TYPEERASE_MASSERASE)
     {
       /*Mass erase to be done*/
-      FLASH_MassErase( pEraseInit->VoltageRange, pEraseInit->Banks);
+      FLASH_MassErase((uint8_t) pEraseInit->VoltageRange, pEraseInit->Banks);
 
       /* Wait for last operation to be completed */
       status = FLASH_WaitForLastOperation((uint32_t)FLASH_TIMEOUT_VALUE);
@@ -195,7 +195,7 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t
       /* Erase by sector by sector to be done*/
       for (index = pEraseInit->Sector; index < (pEraseInit->NbSectors + pEraseInit->Sector); index++)
       {
-        FLASH_Erase_Sector(index,  pEraseInit->VoltageRange);
+        FLASH_Erase_Sector(index, (uint8_t) pEraseInit->VoltageRange);
 
         /* Wait for last operation to be completed */
         status = FLASH_WaitForLastOperation((uint32_t)FLASH_TIMEOUT_VALUE);
@@ -253,7 +253,7 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase_IT(FLASH_EraseInitTypeDef *pEraseInit)
     /*Mass erase to be done*/
     pFlash.ProcedureOnGoing = FLASH_PROC_MASSERASE;
     pFlash.Bank = pEraseInit->Banks;
-    FLASH_MassErase( pEraseInit->VoltageRange, pEraseInit->Banks);
+    FLASH_MassErase((uint8_t) pEraseInit->VoltageRange, pEraseInit->Banks);
   }
   else
   {
@@ -265,7 +265,7 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase_IT(FLASH_EraseInitTypeDef *pEraseInit)
     pFlash.ProcedureOnGoing = FLASH_PROC_SECTERASE;
     pFlash.NbSectorsToErase = pEraseInit->NbSectors;
     pFlash.Sector = pEraseInit->Sector;
-    pFlash.VoltageForErase = pEraseInit->VoltageRange;
+    pFlash.VoltageForErase = (uint8_t)pEraseInit->VoltageRange;
 
     /*Erase 1st sector and wait for IT*/
     FLASH_Erase_Sector(pEraseInit->Sector, pEraseInit->VoltageRange);
@@ -351,7 +351,7 @@ void HAL_FLASHEx_OBGetConfig(FLASH_OBProgramInitTypeDef *pOBInit)
   pOBInit->RDPLevel = (uint32_t)FLASH_OB_GetRDP();
 
   /*Get USER*/
-  pOBInit->USERConfig = FLASH_OB_GetUser();
+  pOBInit->USERConfig = (uint8_t)FLASH_OB_GetUser();
 
   /*Get BOR Level*/
   pOBInit->BORLevel = (uint32_t)FLASH_OB_GetBOR();
@@ -462,10 +462,10 @@ HAL_StatusTypeDef HAL_FLASHEx_OB_SelectPCROP(void)
   uint8_t optiontmp = 0xFF;
 
   /* Mask SPRMOD bit */
-  optiontmp = ((*(__IO uint8_t *)OPTCR_BYTE3_ADDRESS) & 0x7F);
+  optiontmp = (uint8_t)((*(__IO uint8_t *)OPTCR_BYTE3_ADDRESS) & (uint8_t)0x7F);
 
   /* Update Option Byte */
-  *(__IO uint8_t *)OPTCR_BYTE3_ADDRESS = (OB_PCROP_SELECTED | optiontmp);
+  *(__IO uint8_t *)OPTCR_BYTE3_ADDRESS = (uint8_t)(OB_PCROP_SELECTED | optiontmp);
 
   return HAL_OK;
 }
@@ -487,10 +487,10 @@ HAL_StatusTypeDef HAL_FLASHEx_OB_DeSelectPCROP(void)
   uint8_t optiontmp = 0xFF;
 
   /* Mask SPRMOD bit */
-  optiontmp = ((*(__IO uint8_t *)OPTCR_BYTE3_ADDRESS) & 0x7F);
+  optiontmp = (uint8_t)((*(__IO uint8_t *)OPTCR_BYTE3_ADDRESS) & (uint8_t)0x7F);
 
   /* Update Option Byte */
-  *(__IO uint8_t *)OPTCR_BYTE3_ADDRESS = (OB_PCROP_DESELECTED | optiontmp);
+  *(__IO uint8_t *)OPTCR_BYTE3_ADDRESS = (uint8_t)(OB_PCROP_DESELECTED | optiontmp);
 
   return HAL_OK;
 }
@@ -1207,10 +1207,10 @@ static HAL_StatusTypeDef FLASH_OB_UserConfig(uint8_t Iwdg, uint8_t Stop, uint8_t
   if (status == HAL_OK)
   {
     /* Mask OPTLOCK, OPTSTRT, BOR_LEV and BFB2 bits */
-    optiontmp = ((*(__IO uint8_t *)OPTCR_BYTE0_ADDRESS) & 0x1F);
+    optiontmp = (uint8_t)((*(__IO uint8_t *)OPTCR_BYTE0_ADDRESS) & (uint8_t)0x1F);
 
     /* Update User Option Byte */
-    *(__IO uint8_t *)OPTCR_BYTE0_ADDRESS = Iwdg | (Stdby | (Stop | (optiontmp)));
+    *(__IO uint8_t *)OPTCR_BYTE0_ADDRESS = Iwdg | (uint8_t)(Stdby | (uint8_t)(Stop | ((uint8_t)optiontmp)));
   }
 
   return status;
@@ -1247,7 +1247,7 @@ static HAL_StatusTypeDef FLASH_OB_BOR_LevelConfig(uint8_t Level)
 static uint8_t FLASH_OB_GetUser(void)
 {
   /* Return the User Option Byte */
-  return ((FLASH->OPTCR & 0xE0));
+  return ((uint8_t)(FLASH->OPTCR & 0xE0));
 }
 
 /**
@@ -1272,11 +1272,11 @@ static uint8_t FLASH_OB_GetRDP(void)
 {
   uint8_t readstatus = OB_RDP_LEVEL_0;
 
-  if (*(__IO uint8_t *)(OPTCR_BYTE1_ADDRESS) == OB_RDP_LEVEL_2)
+  if (*(__IO uint8_t *)(OPTCR_BYTE1_ADDRESS) == (uint8_t)OB_RDP_LEVEL_2)
   {
     readstatus = OB_RDP_LEVEL_2;
   }
-  else if (*(__IO uint8_t *)(OPTCR_BYTE1_ADDRESS) == OB_RDP_LEVEL_0)
+  else if (*(__IO uint8_t *)(OPTCR_BYTE1_ADDRESS) == (uint8_t)OB_RDP_LEVEL_0)
   {
     readstatus = OB_RDP_LEVEL_0;
   }
@@ -1299,7 +1299,7 @@ static uint8_t FLASH_OB_GetRDP(void)
 static uint8_t FLASH_OB_GetBOR(void)
 {
   /* Return the FLASH BOR level */
-  return (*(__IO uint8_t *)(OPTCR_BYTE0_ADDRESS) & 0x0C);
+  return (uint8_t)(*(__IO uint8_t *)(OPTCR_BYTE0_ADDRESS) & (uint8_t)0x0C);
 }
 
 /**

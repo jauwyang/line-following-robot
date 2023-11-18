@@ -160,9 +160,9 @@ typedef struct
 /** @defgroup EXTI_LL_EC_MODE Mode
   * @{
   */
-#define LL_EXTI_MODE_IT                 (0x00U) /*!< Interrupt Mode */
-#define LL_EXTI_MODE_EVENT              (0x01U) /*!< Event Mode */
-#define LL_EXTI_MODE_IT_EVENT           (0x02U) /*!< Interrupt & Event Mode */
+#define LL_EXTI_MODE_IT                 ((uint8_t)0x00U) /*!< Interrupt Mode */
+#define LL_EXTI_MODE_EVENT              ((uint8_t)0x01U) /*!< Event Mode */
+#define LL_EXTI_MODE_IT_EVENT           ((uint8_t)0x02U) /*!< Interrupt & Event Mode */
 /**
   * @}
   */
@@ -170,10 +170,10 @@ typedef struct
 /** @defgroup EXTI_LL_EC_TRIGGER Edge Trigger
   * @{
   */
-#define LL_EXTI_TRIGGER_NONE            (0x00U) /*!< No Trigger Mode */
-#define LL_EXTI_TRIGGER_RISING          (0x01U) /*!< Trigger Rising Mode */
-#define LL_EXTI_TRIGGER_FALLING         (0x02U) /*!< Trigger Falling Mode */
-#define LL_EXTI_TRIGGER_RISING_FALLING  (0x03U) /*!< Trigger Rising & Falling Mode */
+#define LL_EXTI_TRIGGER_NONE            ((uint8_t)0x00U) /*!< No Trigger Mode */
+#define LL_EXTI_TRIGGER_RISING          ((uint8_t)0x01U) /*!< Trigger Rising Mode */
+#define LL_EXTI_TRIGGER_FALLING         ((uint8_t)0x02U) /*!< Trigger Falling Mode */
+#define LL_EXTI_TRIGGER_RISING_FALLING  ((uint8_t)0x03U) /*!< Trigger Rising & Falling Mode */
 
 /**
   * @}

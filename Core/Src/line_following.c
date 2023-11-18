@@ -2,11 +2,11 @@
 #include "colour_sensor.h"
 
 // PID Gain Constants
-static const double Kp = 1;
+static const double Kp = 50;
 static const double Kd = 0;
 static const double Ki = 0;
 
-static const double GOAL = 1;
+static const double GOAL =3001;
 static const double STEERING_FACTOR = 1;  //TODO: SCALE THE VALUES SO THAT (I.E. HOW MUCH THE THING SHOULD TURN)
 static const double RPM2PWM_FACTOR = 1;  //TODO: ADJUST K TO CONVERT RPM TO PWM HERE
 
@@ -52,9 +52,10 @@ void followLine(motor_t *leftMotor, motor_t *rightMotor){
 
 		double newPWM = convertRPM2PWM(newRPM);
 
-		l298n_move_fwd_single(rightMotor, newPWM);
-		l298n_move_fwd_single(leftMotor, MAX_PWM);
+		tb6612fng_move_fwd_single(rightMotor, newPWM);
+		tb6612fng_move_fwd_single(leftMotor, MAX_PWM);
 	}
+
 	else { // steeringAdjustment is negative (line is to the left)
 		double newRPM = MAX_RPM + steeringAdjustment;
 		if (newRPM < MIN_RPM) {  // TODO: WHAT IF WE ACTUALLY NEED THE MOTOR TO NOT MOVE?
@@ -63,7 +64,7 @@ void followLine(motor_t *leftMotor, motor_t *rightMotor){
 
 		double newPWM = convertRPM2PWM(newRPM);
 
-		l298n_move_fwd_single(rightMotor, MAX_PWM);
-		l298n_move_fwd_single(leftMotor, newPWM);
+		tb6612fng_move_fwd_single(rightMotor, MAX_PWM);
+		tb6612fng_move_fwd_single(leftMotor, newPWM);
 	}
 }

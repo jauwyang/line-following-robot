@@ -472,7 +472,7 @@ typedef  void (*pI2C_AddrCallbackTypeDef)(I2C_HandleTypeDef *hi2c, uint8_t Trans
   *            @arg I2C_FLAG_MSL: Master/Slave flag
   * @retval The new state of __FLAG__ (TRUE or FALSE).
   */
-#define __HAL_I2C_GET_FLAG(__HANDLE__, __FLAG__) (((((__FLAG__) >> 16U)) == 0x01U) ? \
+#define __HAL_I2C_GET_FLAG(__HANDLE__, __FLAG__) ((((uint8_t)((__FLAG__) >> 16U)) == 0x01U) ? \
                                                   (((((__HANDLE__)->Instance->SR1) & ((__FLAG__) & I2C_FLAG_MASK)) == ((__FLAG__) & I2C_FLAG_MASK)) ? SET : RESET) : \
                                                   (((((__HANDLE__)->Instance->SR2) & ((__FLAG__) & I2C_FLAG_MASK)) == ((__FLAG__) & I2C_FLAG_MASK)) ? SET : RESET))
 
@@ -666,15 +666,15 @@ uint32_t HAL_I2C_GetError(I2C_HandleTypeDef *hi2c);
                                                                   ((I2C_SPEED_FAST((__PCLK__), (__SPEED__), (__DUTYCYCLE__)) & I2C_CCR_CCR) == 0U)? 1U : \
                                                                   ((I2C_SPEED_FAST((__PCLK__), (__SPEED__), (__DUTYCYCLE__))) | I2C_CCR_FS))
 
-#define I2C_7BIT_ADD_WRITE(__ADDRESS__)                    (((__ADDRESS__) & (~I2C_OAR1_ADD0)))
-#define I2C_7BIT_ADD_READ(__ADDRESS__)                     (((__ADDRESS__) | I2C_OAR1_ADD0))
+#define I2C_7BIT_ADD_WRITE(__ADDRESS__)                    ((uint8_t)((__ADDRESS__) & (uint8_t)(~I2C_OAR1_ADD0)))
+#define I2C_7BIT_ADD_READ(__ADDRESS__)                     ((uint8_t)((__ADDRESS__) | I2C_OAR1_ADD0))
 
-#define I2C_10BIT_ADDRESS(__ADDRESS__)                     (((uint16_t)((__ADDRESS__) & (uint16_t)0x00FF)))
-#define I2C_10BIT_HEADER_WRITE(__ADDRESS__)                (((uint16_t)((uint16_t)(((uint16_t)((__ADDRESS__) & (uint16_t)0x0300)) >> 7) | (uint16_t)0x00F0)))
-#define I2C_10BIT_HEADER_READ(__ADDRESS__)                 (((uint16_t)((uint16_t)(((uint16_t)((__ADDRESS__) & (uint16_t)0x0300)) >> 7) | (uint16_t)(0x00F1))))
+#define I2C_10BIT_ADDRESS(__ADDRESS__)                     ((uint8_t)((uint16_t)((__ADDRESS__) & (uint16_t)0x00FF)))
+#define I2C_10BIT_HEADER_WRITE(__ADDRESS__)                ((uint8_t)((uint16_t)((uint16_t)(((uint16_t)((__ADDRESS__) & (uint16_t)0x0300)) >> 7) | (uint16_t)0x00F0)))
+#define I2C_10BIT_HEADER_READ(__ADDRESS__)                 ((uint8_t)((uint16_t)((uint16_t)(((uint16_t)((__ADDRESS__) & (uint16_t)0x0300)) >> 7) | (uint16_t)(0x00F1))))
 
-#define I2C_MEM_ADD_MSB(__ADDRESS__)                       (((uint16_t)(((uint16_t)((__ADDRESS__) & (uint16_t)0xFF00)) >> 8)))
-#define I2C_MEM_ADD_LSB(__ADDRESS__)                       (((uint16_t)((__ADDRESS__) & (uint16_t)0x00FF)))
+#define I2C_MEM_ADD_MSB(__ADDRESS__)                       ((uint8_t)((uint16_t)(((uint16_t)((__ADDRESS__) & (uint16_t)0xFF00)) >> 8)))
+#define I2C_MEM_ADD_LSB(__ADDRESS__)                       ((uint8_t)((uint16_t)((__ADDRESS__) & (uint16_t)0x00FF)))
 
 /** @defgroup I2C_IS_RTC_Definitions I2C Private macros to check input parameters
   * @{

@@ -135,8 +135,8 @@ typedef struct
 /** @defgroup RCC_HSI_Config HSI Config
   * @{
   */
-#define RCC_HSI_OFF                      (0x00)
-#define RCC_HSI_ON                       (0x01)
+#define RCC_HSI_OFF                      ((uint8_t)0x00)
+#define RCC_HSI_ON                       ((uint8_t)0x01)
 
 #define RCC_HSICALIBRATION_DEFAULT       0x10U         /* Default HSI calibration trimming value */
 /**
@@ -146,8 +146,8 @@ typedef struct
 /** @defgroup RCC_LSI_Config LSI Config
   * @{
   */
-#define RCC_LSI_OFF                      (0x00)
-#define RCC_LSI_ON                       (0x01)
+#define RCC_LSI_OFF                      ((uint8_t)0x00)
+#define RCC_LSI_ON                       ((uint8_t)0x01)
 /**
   * @}
   */
@@ -155,9 +155,9 @@ typedef struct
 /** @defgroup RCC_PLL_Config PLL Config
   * @{
   */
-#define RCC_PLL_NONE                      (0x00)
-#define RCC_PLL_OFF                       (0x01)
-#define RCC_PLL_ON                        (0x02)
+#define RCC_PLL_NONE                      ((uint8_t)0x00)
+#define RCC_PLL_OFF                       ((uint8_t)0x01)
+#define RCC_PLL_ON                        ((uint8_t)0x02)
 /**
   * @}
   */
@@ -323,13 +323,13 @@ typedef struct
 /** @defgroup RCC_Interrupt Interrupts
   * @{
   */
-#define RCC_IT_LSIRDY                    (0x01)
-#define RCC_IT_LSERDY                    (0x02)
-#define RCC_IT_HSIRDY                    (0x04)
-#define RCC_IT_HSERDY                    (0x08)
-#define RCC_IT_PLLRDY                    (0x10)
-#define RCC_IT_PLLI2SRDY                 (0x20)
-#define RCC_IT_CSS                       (0x80)
+#define RCC_IT_LSIRDY                    ((uint8_t)0x01)
+#define RCC_IT_LSERDY                    ((uint8_t)0x02)
+#define RCC_IT_HSIRDY                    ((uint8_t)0x04)
+#define RCC_IT_HSERDY                    ((uint8_t)0x08)
+#define RCC_IT_PLLRDY                    ((uint8_t)0x10)
+#define RCC_IT_PLLI2SRDY                 ((uint8_t)0x20)
+#define RCC_IT_CSS                       ((uint8_t)0x80)
 /**
   * @}
   */
@@ -344,23 +344,23 @@ typedef struct
   * @{
   */
 /* Flags in the CR register */
-#define RCC_FLAG_HSIRDY                  (0x21)
-#define RCC_FLAG_HSERDY                  (0x31)
-#define RCC_FLAG_PLLRDY                  (0x39)
-#define RCC_FLAG_PLLI2SRDY               (0x3B)
+#define RCC_FLAG_HSIRDY                  ((uint8_t)0x21)
+#define RCC_FLAG_HSERDY                  ((uint8_t)0x31)
+#define RCC_FLAG_PLLRDY                  ((uint8_t)0x39)
+#define RCC_FLAG_PLLI2SRDY               ((uint8_t)0x3B)
 
 /* Flags in the BDCR register */
-#define RCC_FLAG_LSERDY                  (0x41)
+#define RCC_FLAG_LSERDY                  ((uint8_t)0x41)
 
 /* Flags in the CSR register */
-#define RCC_FLAG_LSIRDY                  (0x61)
-#define RCC_FLAG_BORRST                  (0x79)
-#define RCC_FLAG_PINRST                  (0x7A)
-#define RCC_FLAG_PORRST                  (0x7B)
-#define RCC_FLAG_SFTRST                  (0x7C)
-#define RCC_FLAG_IWDGRST                 (0x7D)
-#define RCC_FLAG_WWDGRST                 (0x7E)
-#define RCC_FLAG_LPWRRST                 (0x7F)
+#define RCC_FLAG_LSIRDY                  ((uint8_t)0x61)
+#define RCC_FLAG_BORRST                  ((uint8_t)0x79)
+#define RCC_FLAG_PINRST                  ((uint8_t)0x7A)
+#define RCC_FLAG_PORRST                  ((uint8_t)0x7B)
+#define RCC_FLAG_SFTRST                  ((uint8_t)0x7C)
+#define RCC_FLAG_IWDGRST                 ((uint8_t)0x7D)
+#define RCC_FLAG_WWDGRST                 ((uint8_t)0x7E)
+#define RCC_FLAG_LPWRRST                 ((uint8_t)0x7F)
 /**
   * @}
   */
@@ -1169,7 +1169,7 @@ typedef struct
   *            @arg RCC_IT_PLLRDY: Main PLL ready interrupt.
   *            @arg RCC_IT_PLLI2SRDY: PLLI2S ready interrupt.
   */
-#define __HAL_RCC_DISABLE_IT(__INTERRUPT__) (*(__IO uint8_t *) RCC_CIR_BYTE1_ADDRESS &= (~(__INTERRUPT__)))
+#define __HAL_RCC_DISABLE_IT(__INTERRUPT__) (*(__IO uint8_t *) RCC_CIR_BYTE1_ADDRESS &= (uint8_t)(~(__INTERRUPT__)))
 
 /** @brief  Clear the RCC's interrupt pending bits (Perform Byte access to RCC_CIR[23:16]
   *         bits to clear the selected interrupt pending bits.
@@ -1222,7 +1222,7 @@ typedef struct
   *            @arg RCC_FLAG_LPWRRST: Low Power reset.
   * @retval The new state of __FLAG__ (TRUE or FALSE).
   */
-#define RCC_FLAG_MASK  (0x1FU)
+#define RCC_FLAG_MASK  ((uint8_t)0x1FU)
 #define __HAL_RCC_GET_FLAG(__FLAG__) (((((((__FLAG__) >> 5U) == 1U)? RCC->CR :((((__FLAG__) >> 5U) == 2U) ? RCC->BDCR :((((__FLAG__) >> 5U) == 3U)? RCC->CSR :RCC->CIR))) & (1U << ((__FLAG__) & RCC_FLAG_MASK)))!= 0U)? 1U : 0U)
 
 /**

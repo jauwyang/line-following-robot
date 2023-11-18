@@ -894,8 +894,8 @@ typedef struct
 /** @defgroup RCCEx_TIM_PRescaler_Selection  RCC TIM PRescaler Selection
   * @{
   */
-#define RCC_TIMPRES_DESACTIVATED        (0x00)
-#define RCC_TIMPRES_ACTIVATED           (0x01)
+#define RCC_TIMPRES_DESACTIVATED        ((uint8_t)0x00)
+#define RCC_TIMPRES_ACTIVATED           ((uint8_t)0x01)
 /**
   * @}
   */
@@ -910,8 +910,8 @@ typedef struct
 /** @defgroup RCCEx_LSE_Dual_Mode_Selection  RCC LSE Dual Mode Selection
   * @{
   */
-#define RCC_LSE_LOWPOWER_MODE           (0x00)
-#define RCC_LSE_HIGHDRIVE_MODE          (0x01)
+#define RCC_LSE_LOWPOWER_MODE           ((uint8_t)0x00)
+#define RCC_LSE_HIGHDRIVE_MODE          ((uint8_t)0x01)
 /**
   * @}
   */

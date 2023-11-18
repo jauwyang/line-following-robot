@@ -1,7 +1,7 @@
 ../Core/Src/colour_sensor.c:12:6:isRed	3
 ../Core/Src/colour_sensor.c:21:6:isGreen	3
 ../Core/Src/colour_sensor.c:31:6:isBlue	3
-../Core/Src/colour_sensor.c:41:6:readRawColourSensors	1
-../Core/Src/colour_sensor.c:46:6:processColourSensorReadings	8
-../Core/Src/colour_sensor.c:81:10:countMatchingSensorColourDetections	3
-../Core/Src/colour_sensor.c:98:8:getPositionOfColourSource	3
+../Core/Src/colour_sensor.c:41:6:readRawColourSensors	2
+../Core/Src/colour_sensor.c:52:6:processColourSensorReadings	8
+../Core/Src/colour_sensor.c:88:10:countMatchingSensorColourDetections	3
+../Core/Src/colour_sensor.c:105:8:getPositionOfColourSource	3
