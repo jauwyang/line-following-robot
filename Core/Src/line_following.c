@@ -19,11 +19,12 @@ double getPathLinePosition(void){
 
 double PIDAlgorithm(double currentLinePosition) {
 	static double previousError = 0;
+	static double errorIntegral = 0;
 
 	double error = GOAL - currentLinePosition;
 
 	double errorDerivative = error - previousError;
-	double errorIntegral = errorIntegral + error;
+	errorIntegral = errorIntegral + error;
 
 	double steeringValue = Kp*error + Ki*errorIntegral + Kd*errorDerivative;
 

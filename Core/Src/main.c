@@ -110,7 +110,7 @@ void calibrate_system(motor_t *motor_left, motor_t *motor_right) {
 //		sprintf(msg, "Sensor: %hu { R: %hu G: %hu B: %hu\r\n", i, cap.red/red_reference, cap.green/green_reference, cap.blue/blue_reference);
 //		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 //		HAL_Delay(1000);
-	}
+//	}
 }
 
 void setup_color_sensors(void) {

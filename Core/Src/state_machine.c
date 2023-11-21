@@ -11,7 +11,10 @@
 // create
 
 void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
-//	uint16_t motorPWM = 1; // TODO: Change later (not max?)
+	// transition state condition (switch automatically, START only used as entry point)
+	*currentState = FOLLOW_LINE_TO_TARGET;
+
+	//	uint16_t motorPWM = 1; // TODO: Change later (not max?)
 //	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
 //
 //	// transition state condition (starting line detected)
@@ -19,10 +22,6 @@ void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorR
 //	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches){
 //		*currentState = FOLLOW_LINE_TO_TARGET;
 //	}
-
-
-	// transition state condition (switch automatically, START only used as entry point)
-	*currentState = FOLLOW_LINE_TO_TARGET;
 }
 
 void followLineToTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
