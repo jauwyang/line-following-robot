@@ -98,7 +98,7 @@ void printRawRGBColours(UART_HandleTypeDef huart2){
 	for (uint32_t i = 0; i < SENSOR_COUNT; i++) {
 		rgb_cap_t cap = rawSensorReadings[i];
 		char rgbMsg[256];
-		sprintf(rgbMsg, "(%hu, %hu, %hu)\n", cap.red, cap.green, cap.blue);
+		sprintf(rgbMsg, "(%hu, %hu, %hu)  |  ", cap.red, cap.green, cap.blue);
 		strcat(readings, rgbMsg);
 	}
 
