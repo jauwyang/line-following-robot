@@ -1,5 +1,6 @@
-../Core/Src/mg995/mg995.c:16:6:mg995_set_angle	2
-../Core/Src/mg995/mg995.c:30:6:mg995_open_claw	1
-../Core/Src/mg995/mg995.c:37:6:mg995_close_claw	1
-../Core/Src/mg995/mg995.c:41:6:mg995_open_claw_delay	2
-../Core/Src/mg995/mg995.c:50:6:mg995_close_claw_delay	2
+../Core/Src/mg995/mg995.c:23:6:mg995_move_to	2
+../Core/Src/mg995/mg995.c:34:6:mg995_move_range	4
+../Core/Src/mg995/mg995.c:55:6:mg995_open_claw	1
+../Core/Src/mg995/mg995.c:59:6:mg995_close_claw	1
+../Core/Src/mg995/mg995.c:63:6:mg995_open_claw_delay	1
+../Core/Src/mg995/mg995.c:68:6:mg995_close_claw_delay	1

@@ -85,9 +85,9 @@ void calibrate_system(motor_t *motor_left, motor_t *motor_right) {
 	HAL_Delay(1500);*/
 
 	// Servo Motors
-	mg995_open_claw_delay(50, 5);
+	mg995_open_claw_delay();
 	HAL_Delay(2000);
-	mg995_close_claw_delay(140, 5);
+	mg995_close_claw_delay();
 	HAL_Delay(2000);
 
 	// Read Colour Sensors
@@ -186,6 +186,9 @@ int main(void)
   // APDS9960 Colour Sensors
   setup_color_sensors();
 
+
+  // Ensure that the gripper is open before beginning the state machine
+  mg995_open_claw();
 
   // Initialize robot sequence (state)
   enum RobotSequence currentState = START;
