@@ -6,7 +6,7 @@ static const double Kp = 50;
 static const double Kd = 0;
 static const double Ki = 0;
 
-static const double GOAL =3001;
+static const double GOAL =300;
 static const double STEERING_FACTOR = 1;  //TODO: SCALE THE VALUES SO THAT (I.E. HOW MUCH THE THING SHOULD TURN)
 static const double RPM2PWM_FACTOR = 1;  //TODO: ADJUST K TO CONVERT RPM TO PWM HERE
 

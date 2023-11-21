@@ -25,6 +25,7 @@
 #include "color/apds9960.h"
 
 #include "state_machine.h"
+#include "colour_sensor.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -99,17 +100,17 @@ void calibrate_system(motor_t *motor_left, motor_t *motor_right) {
 	// Red:
 
 
-	/*rgb_cap_t cap = {0};
-	uint16_t red_reference = 1;
-	uint16_t green_reference = 1;
-	uint16_t blue_reference = 1;
-	for (uint8_t i = 0; i < 5; i++) {
-		tcs9548a_select_channel(i);
-		cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
-		sprintf(msg, "Sensor: %hu { R: %hu G: %hu B: %hu\r\n", i, cap.red/red_reference, cap.green/green_reference, cap.blue/blue_reference);
-		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
-		HAL_Delay(1000);
-	}*/
+//	rgb_cap_t cap = {0};
+//	uint16_t red_reference = 1;
+//	uint16_t green_reference = 1;
+//	uint16_t blue_reference = 1;
+//	for (uint8_t i = 0; i < 5; i++) {
+//		tcs9548a_select_channel(i);
+//		cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
+//		sprintf(msg, "Sensor: %hu { R: %hu G: %hu B: %hu\r\n", i, cap.red/red_reference, cap.green/green_reference, cap.blue/blue_reference);
+//		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+//		HAL_Delay(1000);
+	}
 }
 
 void setup_color_sensors(void) {
@@ -200,6 +201,12 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  calibrate_system(&lm, &rm);
+
+	  printRawRGBColours(huart2);
+
+	  printProcessedColours(RED, huart2);
+	  printProcessedColours(GREEN, huart2);
+	  printProcessedColours(BLUE, huart2);
 	  //stateMachine(&currentState, &lm, &rm);
   }
   /* USER CODE END 3 */
