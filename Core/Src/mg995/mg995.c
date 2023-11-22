@@ -24,6 +24,10 @@ void mg995_set_angle(uint8_t angle) {
 	htim2.Instance->CCR1 = (uint16_t)(ms_mapped * htim2.Instance->ARR) / 20;
 }
 
+void mg995_move_range(uint8_t angle_from, uint8_t angle_to, const uint32_t delay) {
+
+}
+
 /**
  * 0 degrees to 180 degrees
  */
@@ -52,6 +56,6 @@ void mg995_close_claw_delay(const uint8_t p_angle, const uint32_t delay) {
 	while (angle > p_angle) {
 		mg995_set_angle(angle);
 		angle--;
-+		HAL_Delay(delay);
+		HAL_Delay(delay);
 	}
 }

@@ -6,22 +6,15 @@ static const double Kp = 50;
 static const double Kd = 0;
 static const double Ki = 0;
 
-static const double GOAL =300;
-static const double STEERING_FACTOR = 1;  //TODO: SCALE THE VALUES SO THAT (I.E. HOW MUCH THE THING SHOULD TURN)
-static const double RPM2PWM_FACTOR = 1;  //TODO: ADJUST K TO CONVERT RPM TO PWM HERE
+static const double GOAL = 200;
+static const double STEERING_FACTOR = 1;
 
-
-double getPathLinePosition(void){
-	double linePosition = getPositionOfColourSource(RED);
-	return linePosition;
-}
-
+static double previousError = 0;
 
 double PIDAlgorithm(double currentLinePosition) {
-	static double previousError = 0;
 	static double errorIntegral = 0;
 
-	double error = GOAL - currentLinePosition;
+	double error = GOAL - 100 * currentLinePosition;
 
 	double errorDerivative = error - previousError;
 	errorIntegral = errorIntegral + error;
@@ -34,38 +27,46 @@ double PIDAlgorithm(double currentLinePosition) {
 	
 }
 
-
-double convertRPM2PWM(double rpm){
-	return RPM2PWM_FACTOR*rpm;
-}
-
-
 void followLine(motor_t *leftMotor, motor_t *rightMotor){
-	double linePosition = getPathLinePosition();
-	double steeringAdjustment = PIDAlgorithm(linePosition);
-	
-	// this "left vs right" of the positive/negative sign of the steeringAdjustment depends on the sensor numbering
-	if (steeringAdjustment > 0){  // is on the right
-		double newRPM = MAX_RPM - steeringAdjustment;
-		if (newRPM < MIN_RPM) {  // TODO: WHAT IF WE ACTUALLY NEED THE MOTOR TO NOT MOVE?
-			newRPM = MIN_RPM;  
+	double linePosition = getPositionOfColourSource(RED);
+
+	/**
+	 * Check if none of the sensors are detecting the line (off the line).
+	 * Use the previousError to determine which way to steer.
+	 * If currentLinePosition > GOAL: steer right
+	 * If currentLinePosition < GOAL: steer left
+	 */
+	while (linePosition == -1) {
+		if (previousError < 0) {
+			tb6612fng_move_fwd(leftMotor, rightMotor, MAX_PWM, 0.25 * MAX_PWM);
+
+		} else {
+			tb6612fng_move_fwd(leftMotor, rightMotor, 0.25 * MAX_PWM, MAX_PWM);
 		}
 
-		double newPWM = convertRPM2PWM(newRPM);
+		// Update the linePosition each iteration
+		linePosition = getPositionOfColourSource(RED);
+	}
 
-		tb6612fng_move_fwd_single(rightMotor, newPWM);
-		tb6612fng_move_fwd_single(leftMotor, MAX_PWM);
+	// At least one sensor is now back on the line; proceed with computing the steering adjustment
+	double steeringAdjustment = PIDAlgorithm(linePosition);
+
+	// Use MAX_PWM: all newPWMs are less than MAX_PWM
+	if (steeringAdjustment < 0){  // is on the right
+		double newPWM = MAX_PWM + steeringAdjustment;
+		if (newPWM < MIN_PWM) {
+			newPWM = MIN_PWM;
+		}
+
+		tb6612fng_move_fwd(leftMotor, rightMotor, MAX_PWM, newPWM);
 	}
 
 	else { // steeringAdjustment is negative (line is to the left)
-		double newRPM = MAX_RPM + steeringAdjustment;
-		if (newRPM < MIN_RPM) {  // TODO: WHAT IF WE ACTUALLY NEED THE MOTOR TO NOT MOVE?
-			newRPM = MIN_RPM;
+		double newPWM = MAX_PWM - steeringAdjustment;
+		if (newPWM < MIN_PWM) {
+			newPWM = MIN_PWM;
 		}
 
-		double newPWM = convertRPM2PWM(newRPM);
-
-		tb6612fng_move_fwd_single(rightMotor, MAX_PWM);
-		tb6612fng_move_fwd_single(leftMotor, newPWM);
+		tb6612fng_move_fwd(leftMotor, rightMotor, newPWM, MAX_PWM);
 	}
 }

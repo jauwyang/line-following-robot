@@ -41,10 +41,6 @@ bool isColourDetected(enum Colour tapeColour, rgb_cap_t sensorReading);
 
 void processColourSensorReadings(bool processedSensorReadings[], rgb_cap_t rawSensorReadings[], enum Colour targetColourName);
 
-void printRawRGBColours(UART_HandleTypeDef huart2);
-
-void printProcessedColours(enum Colour colourTape, UART_HandleTypeDef huart2);
-
 uint32_t countMatchingSensorColourDetections(enum Colour targetColourName);
 
 double getPositionOfColourSource(enum Colour targetColourName);

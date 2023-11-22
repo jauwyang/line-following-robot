@@ -27,12 +27,13 @@ void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorR
 void followLineToTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	followLine(motorLeft, motorRight);
 
-	uint8_t middleSensorPosition = (ceil(SENSOR_COUNT / 2));
+	uint8_t middleSensorPosition = (floor(SENSOR_COUNT / 2.0));
 
 	// transition state condition (target detected & is lined up to its center)
-	if (getPositionOfColourSource(BLUE) == middleSensorPosition){
-		*currentState = PICKUP;
-	}
+//	if (getPositionOfColourSource(BLUE) == middleSensorPosition){
+//		*currentState = PICKUP;
+//	}
+// REMOVE TO RESUME STATES
 }
 
 void pickup(enum RobotSequence *currentState){

@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 void mg995_set_angle(uint8_t angle);
+void mg995_move_range(uint8_t angle_from, uint8_t angle_to, uint32_t delay);
 void mg995_open_claw(void);
 void mg995_close_claw(void);
 void mg995_open_claw_delay(uint8_t p_angle, uint32_t delay);
