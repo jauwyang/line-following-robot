@@ -1,42 +1,76 @@
-// #ifndef LINE_FOLLOWING_ROBOT_MOTORS_H
-// #define LINE_FOLLOWING_ROBOT_MOTORS_H
+ #ifndef LINE_FOLLOWING_ROBOT_MOTORS_H
+ #define LINE_FOLLOWING_ROBOT_MOTORS_H
 
-// /**
-//  * @file motors.h
-//  * @brief High-level motor control API for travelling a set distance and rotating the robot 
-//  */
+ /**
+  * @file motors.h
+  * @brief High-level motor control API for travelling a set distance and rotating the robot.
+  * 	High-level functionality is based on an interpolation algorithm using BST.
+  */
 
-// #include <stdint.h>
+#include "tb6612fng/tb6612fng.h"
+ #include <stdint.h>
 
-// typedef enum _LinearDirection {
+/**
+ * Constants
+ */
+#define LINEAR_PWM				(uint16_t) 200
+#define ROTATION_PWM			(uint16_t) 200
+#define WHEEL_CIRCUMFERENCE_CM	(double) 22.3
 
-//     DIR_FORWARD = 0,    // Forward
-//     DIR_REVERSE         // Reverse
 
-// } LinearDirection;
+typedef enum _LinearDirection {
 
-// typedef enum _RotationalDirection {
+    DIR_FORWARD = 0,    // Forward
+    DIR_REVERSE         // Reverse
 
-//     DIR_CW = 0, // Clockwise
-//     DIR_CCW     // Counter-Clockwise
+ } LinearDirection;
 
-// } RotationalDirection;
+typedef enum _RotationalDirection {
 
-// typedef struct _LinearParams {
+    DIR_CW = 0, // Clockwise
+    DIR_CCW     // Counter-Clockwise
 
-//     uint16_t distance;
-//     LinearDirection direction;
+} RotationalDirection;
 
-// } LinearParams;
+ /**
+  * Structure containing parameters for linear travel
+  * @field distance - Desired distance to travel in cm
+  * @field direction - Forward or reverse
+  */
+typedef struct _LinearParams {
 
-// typedef struct _RotationParam {
+    uint16_t distanceCm;
+    LinearDirection direction;
 
-//     uint16_t angle;
-//     RotationalDirection direction;
+} LinearParams;
 
-// } RotationParams;
+/**
+ * Structure containing parameters for rotation
+ * @field angle - Degrees of rotation
+ * @field direction - Clockwise or counter-clockwise
+ */
+typedef struct _RotationParam {
 
-// void travelSetDistance(motor_t *motor_left, motor_t *motor_right, LinearParams params);
-// void rotateRobotCenter(motor_t *motor_left, motor_t *motor_right, RotationParams params);
+    uint16_t angle;
+    RotationalDirection direction;
 
-// #endif // LINE_FOLLOWING_ROBOT_MOTORS_H
+} RotationParams;
+
+/**
+ * Characterization unit representing a single data point.
+ * Note that displacement can be used for both linear and angular purposes
+ */
+typedef struct _DataPoint {
+
+    double displacement;
+    double timeSec;
+
+} DataPoint;
+
+/**
+ * User-facing API
+ */
+void travelSetDistance(motor_t *motorLeft, motor_t *motorRight, LinearParams params);
+void rotateRobot(motor_t *motorLeft, motor_t *motorRight, RotationParams params);
+
+ #endif // LINE_FOLLOWING_ROBOT_MOTORS_H
