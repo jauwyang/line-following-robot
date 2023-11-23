@@ -30,7 +30,8 @@ Core/Src/line_following.o: ../Core/Src/line_following.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- ../Core/Inc/colour_sensor.h
+ ../Core/Inc/colour_sensor.h ../Core/Inc/color/apds9960.h \
+ ../Core/Inc/color/apds9960_config.h ../Core/Inc/color/tcs9548a.h
 ../Core/Inc/line_following.h:
 ../Core/Inc/tb6612fng/tb6612fng.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -64,3 +65,6 @@ Core/Src/line_following.o: ../Core/Src/line_following.c \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 ../Core/Inc/colour_sensor.h:
+../Core/Inc/color/apds9960.h:
+../Core/Inc/color/apds9960_config.h:
+../Core/Inc/color/tcs9548a.h:

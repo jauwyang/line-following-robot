@@ -9,8 +9,8 @@ static const uint16_t infinitySensor = 10000;
 
 static const tapeColourBounds relativeRed = {
 	.red = {-1 , -1},
-	.green = {60, infinitySensor},
-	.blue = {60, infinitySensor},
+	.green = {40, infinitySensor},
+	.blue = {40, infinitySensor},
 	.tapeColour = RED,
 };
 
@@ -35,7 +35,6 @@ void readRawColourSensors(rgb_cap_t rawSensorReadings[]){
 	rgb_cap_t cap = {0};
 	for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
 		tcs9548a_select_channel(i);
-		HAL_Delay(5);
 		cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
 
 		rawSensorReadings[i] = cap;
@@ -51,17 +50,25 @@ uint16_t getAverageChannelValues(rgb_cap_t sensorReading){
 	return (sensorReading.red + sensorReading.green + sensorReading.blue)/3;
 }
 
-
 bool isColourDetected(enum Colour tapeColour, rgb_cap_t sensorReading){
 	switch (tapeColour){
-		case RED:
-			return (isInChannelBounds(sensorReading.green, relativeRed.green) &&
-					isInChannelBounds(sensorReading.blue, relativeRed.blue));
-		case GREEN:
+		case RED: {
+			uint16_t diffG = sensorReading.red - sensorReading.green;
+			uint16_t diffB = sensorReading.red - sensorReading.blue;
+
+			return (isInChannelBounds(diffG, relativeRed.green) &&
+					isInChannelBounds(diffB, relativeRed.blue));
+		}
+		case GREEN: {
 			return getAverageChannelValues(sensorReading) < greenTapeAverageRequirement;
-		case BLUE:
-			return (isInChannelBounds(sensorReading.red, relativeBlue.red) &&
-					isInChannelBounds(sensorReading.green, relativeBlue.green));
+		}
+		case BLUE: {
+			uint16_t diffR = sensorReading.blue - sensorReading.red;
+			uint16_t diffG = sensorReading.blue - sensorReading.green;
+
+			return (isInChannelBounds(diffR, relativeBlue.red) &&
+					isInChannelBounds(diffG, relativeBlue.green));
+		}
 		default:
 			printf("UNDEFINED COLOUR"); // left to crash
 			return false;
@@ -86,73 +93,6 @@ void processColourSensorReadings(bool processedSensorReadings[], rgb_cap_t rawSe
 		processedSensorReadings[i] = isColourDetected(targetColourName, rawSensorReadings[i]);
 	}
 }
-
-
-//void printRawRGBColours(UART_HandleTypeDef *huart2){
-//	// idk if this works
-//	rgb_cap_t rawSensorReadings[SENSOR_COUNT];
-//	readRawColourSensors(rawSensorReadings);
-//
-//	char msg_top[] = "\nSensor  |    1    |    2    |    3    |    4    |    5    |\r\n";
-//	char line[] = "---------------------------------------\r\n";
-//	char readings[256] = "(R,G,B) |  ";
-//
-//	for (uint32_t i = 0; i < SENSOR_COUNT; i++) {
-//		rgb_cap_t cap = rawSensorReadings[i];
-//		char rgbMsg[256];
-//		sprintf(rgbMsg, "(%hu, %hu, %hu)  |  ", cap.red, cap.green, cap.blue);
-//		strcat(readings, rgbMsg);
-//	}
-//	strcat(readings, "\r\n\r\n\r\n");
-////	size_t totalLength = strlen(msg_top) + strlen(line) + strlen(readings) + strlen("\n\n\n") + 1;
-////	char *msg = (char *)malloc(totalLength * sizeof(char));
-////	memset(msg, '\0', totalLength);
-////	strcat(msg_top, line);
-////	strcat(msg_top, readings);
-////	strcat(msg_top, "\n\n\n");
-////	strcat(msg, msg_top);
-//
-////	strcat(msg, msg_top);
-////	strcat(msg, line);
-////	strcat(msg, readings);
-////	strcat(msg, "\n\n\n");
-//
-////	HAL_UART_Transmit(huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
-//
-//	HAL_UART_Transmit(huart2, (uint8_t *)msg_top, strlen(msg_top), HAL_MAX_DELAY);
-//	HAL_UART_Transmit(huart2, (uint8_t *)line, strlen(line), HAL_MAX_DELAY);
-//	HAL_UART_Transmit(huart2, (uint8_t *)readings, strlen(readings), HAL_MAX_DELAY);
-//
-////	free(msg);
-//}
-//
-//
-//void printProcessedColours(enum Colour colourTape, UART_HandleTypeDef *huart2){
-//	// uint32_t DELAY = 0x000FFFFFU;
-//	rgb_cap_t rawSensorReadings[SENSOR_COUNT];
-//	readRawColourSensors(rawSensorReadings);
-//
-//	bool processedSensorReadings[SENSOR_COUNT];
-//	processColourSensorReadings(processedSensorReadings, rawSensorReadings, colourTape);
-//
-//	char *colourName[] = {"RED", "GRN", "BLU"};
-//
-//	char msg[] = "Sensor  |  1  |  2  |  3  |  4  |  5  |\r\n";
-//	char line[] = "---------------------------------------\r\n";
-//	char readings[256];
-//	strcat(readings, colourName[colourTape]);
-//	strcat(readings, "     |  ");
-//
-//	for (uint32_t i = 0; i < SENSOR_COUNT; i++) {
-//		strcat(readings, processedSensorReadings[i] ? "X  |  " : "-  |  ");
-//	}
-//
-//	strcat(readings, "\r\n\r\n\r\n");
-//
-//	HAL_UART_Transmit(huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
-//	HAL_UART_Transmit(huart2, (uint8_t *)line, strlen(line), HAL_MAX_DELAY);
-//	HAL_UART_Transmit(huart2, (uint8_t *)readings, strlen(readings), HAL_MAX_DELAY);
-//}
 
 
 uint32_t countMatchingSensorColourDetections(enum Colour targetColourName){

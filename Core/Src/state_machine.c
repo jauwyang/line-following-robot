@@ -6,10 +6,6 @@
 
 #include <stdio.h>
 
-// find out if a colour has been detected (set number of them has been detected)
-// follow line (location of estimated line source)
-// create
-
 void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
 	// transition state condition (switch automatically, START only used as entry point)
 	*currentState = FOLLOW_LINE_TO_TARGET;

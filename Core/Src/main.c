@@ -72,89 +72,60 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+/**
+ * Testing Functions
+ */
+
 char msg[256];
+char header[256];
 
-void printRawRGBColours(void){
-	// idk if this works
-	rgb_cap_t rawSensorReadings[SENSOR_COUNT];
-	readRawColourSensors(rawSensorReadings);
+static void print_raw_rgb(void) {
+	rgb_cap_t raw[SENSOR_COUNT];
+	readRawColourSensors(raw);
 
-	char msg_top[] = "\nSensor  |    1    |    2    |    3    |    4    |    5    |\r\n";
-	char line[] = "---------------------------------------\r\n";
-	char readings[256] = "(R,G,B) |  ";
+	sprintf(header, "\r\n%s\r\n", "|   1   | 	 2   |   3    |   4   |  5 |");
+	HAL_UART_Transmit(&huart2, (uint8_t *)header, strlen(header), HAL_MAX_DELAY);
 
-	for (uint32_t i = 0; i < SENSOR_COUNT; i++) {
-		rgb_cap_t cap = rawSensorReadings[i];
-		char rgbMsg[256];
-		sprintf(rgbMsg, "(%hu, %hu, %hu)  |  ", cap.red, cap.green, cap.blue);
-		strcat(readings, rgbMsg);
+	for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+		rgb_cap_t cap = raw[i];
+		sprintf(msg, "(%hu,%hu,%hu)  |  ", cap.red, cap.green, cap.blue);
+		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 	}
-	strcat(readings, "\r\n\r\n\r\n");
-//	size_t totalLength = strlen(msg_top) + strlen(line) + strlen(readings) + strlen("\n\n\n") + 1;
-//	char *msg = (char *)malloc(totalLength * sizeof(char));
-//	memset(msg, '\0', totalLength);
-//	strcat(msg_top, line);
-//	strcat(msg_top, readings);
-//	strcat(msg_top, "\n\n\n");
-//	strcat(msg, msg_top);
-
-//	strcat(msg, msg_top);
-//	strcat(msg, line);
-//	strcat(msg, readings);
-//	strcat(msg, "\n\n\n");
-
-//	HAL_UART_Transmit(huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
-
-	HAL_UART_Transmit(&huart2, (uint8_t *)msg_top, strlen(msg_top), HAL_MAX_DELAY);
-	HAL_UART_Transmit(&huart2, (uint8_t *)line, strlen(line), HAL_MAX_DELAY);
-	HAL_UART_Transmit(&huart2, (uint8_t *)readings, strlen(readings), HAL_MAX_DELAY);
-
-//	free(msg);
 }
 
+static void print_processed_readings(enum Colour colour) {
+	rgb_cap_t raw[SENSOR_COUNT];
+	readRawColourSensors(raw);
 
-void printProcessedColours(enum Colour colourTape){
-	// uint32_t DELAY = 0x000FFFFFU;
-	rgb_cap_t rawSensorReadings[SENSOR_COUNT];
-	readRawColourSensors(rawSensorReadings);
+	bool proc_readings[SENSOR_COUNT];
+	processColourSensorReadings(proc_readings, raw, colour);
 
-	bool processedSensorReadings[SENSOR_COUNT];
-	processColourSensorReadings(processedSensorReadings, rawSensorReadings, colourTape);
+	sprintf(header, "\r\n%s\r\n", "|    1    |    2    |    3    |    4    |    5    |");
+	HAL_UART_Transmit(&huart2, (uint8_t *)header, strlen(header), HAL_MAX_DELAY);
 
-	char *colourName[] = {"RED", "GRN", "BLU"};
-
-	char msg[] = "Sensor  |  1  |  2  |  3  |  4  |  5  |\r\n";
-	char line[] = "---------------------------------------\r\n";
-	char readings[256];
-	strcat(readings, colourName[colourTape]);
-	strcat(readings, "     |  ");
-
-	for (uint32_t i = 0; i < SENSOR_COUNT; i++) {
-		strcat(readings, processedSensorReadings[i] ? "X  |  " : "-  |  ");
+	for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+		bool proc = proc_readings[i];
+		sprintf(msg, "%s", proc ? "X  | " : "-  |  ");
+		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 	}
-
-	strcat(readings, "\r\n\r\n\r\n");
-
-	HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
-	HAL_UART_Transmit(&huart2, (uint8_t *)line, strlen(line), HAL_MAX_DELAY);
-	HAL_UART_Transmit(&huart2, (uint8_t *)readings, strlen(readings), HAL_MAX_DELAY);
 }
 
-void calibrate_system(motor_t *motor_left, motor_t *motor_right) {
+static void test_system(motor_t *motor_left, motor_t *motor_right) {
 	// DC Motors
-	tb6612fng_move_fwd(motor_left, motor_right, 150, 150);
+	/*tb6612fng_move_fwd(motor_left, motor_right, 150, 150);
 	HAL_Delay(1500);
 	tb6612fng_stop(motor_left, motor_right);
 	HAL_Delay(1500);
 	tb6612fng_move_rev(motor_left, motor_right, 150, 150);
 	HAL_Delay(1500);
 	tb6612fng_stop(motor_left, motor_right);
-	HAL_Delay(1500);
+	HAL_Delay(1500);*/
 
 	// Servo Motors
-	/*mg995_open_claw_delay(50, 5);
+	/*mg995_open_claw();
 	HAL_Delay(2000);
-	mg995_close_claw_delay(140, 5);
+	mg995_close_claw();
 	HAL_Delay(2000);*/
 
 	// Read Colour Sensors
@@ -165,6 +136,8 @@ void calibrate_system(motor_t *motor_left, motor_t *motor_right) {
 	// Green: 16 - 22, 20 - 50, 9 - 30
 	// Red:
 
+	print_raw_rgb();
+	print_processed_readings(GREEN);
 
 //	rgb_cap_t cap = {0};
 //	uint16_t red_reference = 1;
@@ -175,18 +148,18 @@ void calibrate_system(motor_t *motor_left, motor_t *motor_right) {
 //		cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
 //		sprintf(msg, "Sensor: %hu { R: %hu G: %hu B: %hu\r\n", i, cap.red/red_reference, cap.green/green_reference, cap.blue/blue_reference);
 //		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
-//		HAL_Delay(1000);
 //	}
 }
 
-void setup_color_sensors(void) {
+/**
+ * Device Initialization Functions
+ */
+static void setup_color_sensors(void) {
 	for (uint8_t i = 0; i < 5; i++) {
 		tcs9548a_select_channel(i);
 		apds9960_color_init(APDS9960_I2C_ADDR);
 	}
 }
-
-
 
 /* USER CODE END 0 */
 
@@ -197,7 +170,6 @@ void setup_color_sensors(void) {
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  //enum RobotSequence currentState = START;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -253,6 +225,8 @@ int main(void)
   // APDS9960 Colour Sensors
   setup_color_sensors();
 
+  // Ensure the gripper is open before starting the state machine
+  mg995_open_claw();
 
   // Initialize robot sequence (state)
   enum RobotSequence currentState = START;
@@ -266,16 +240,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	  calibrate_system(&lm, &rm);
-
-	  /*/printRawRGBColours();
-
-	  printProcessedColours(RED);
-	  printProcessedColours(GREEN);
-	  printProcessedColours(BLUE);
-//	  followLine(&lm, &rm); */
-
-	  stateMachine(&currentState, &lm, &rm);
+	  //test_system(&lm, &rm);
+	  //tb6612fng_move_fwd(&lm, &rm, MAX_PWM, MAX_PWM);
+	  //tb6612fng_move_fwd(&lm, &rm, 150, 150);
+	 //print_raw_rgb();
+	 //print_processed_readings(RED);
+	 stateMachine(&currentState, &lm, &rm);
   }
   /* USER CODE END 3 */
 }
@@ -381,7 +351,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 840-1;
+  htim1.Init.Prescaler = 1680-1;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 1000-1;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

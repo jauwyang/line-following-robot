@@ -3,8 +3,8 @@
 
 #include <stm32f4xx_hal.h>
 
-static const uint32_t MAX_PWM = 570/2 ;
-static const uint32_t MIN_PWM = 90;
+static const uint32_t MAX_PWM = 550 * 0.8;
+static const uint32_t MIN_PWM = 0;
 
 
 typedef enum _direction_e {
