@@ -9,8 +9,8 @@ static const uint16_t infinitySensor = 10000;
 
 static const tapeColourBounds relativeRed = {
 	.red = {-1 , -1},
-	.green = {40, infinitySensor},
-	.blue = {40, infinitySensor},
+	.green = {22, infinitySensor},
+	.blue = {22, infinitySensor},
 	.tapeColour = RED,
 };
 

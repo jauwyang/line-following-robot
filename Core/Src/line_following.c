@@ -10,7 +10,7 @@ char pidstuff[256];
 
 // PID Gain Constants
 /**
- * TESTS
+ * TESTS - Best is at bottom Nov 22 2023
  * P I D
  * 250, 0, 0
  * 285, 60, 0
@@ -18,12 +18,14 @@ char pidstuff[256];
  * 275, 85, 0
  * 275 * 1.15, 90 * 1.15, 0.5, RPM = 550 * 0.8
  * 275 * 1.2, 90 * 1.2, 0.5, RPM = 550 * 0.8
+ * 275 * 1.15, 150 * 1.15, 0.25 * 1.15, RPM = 550 * 0.8
  */
-const double Sf = 1.2;
+
+const double Sf = 1.15;
 
 static const double Kp = 275 * Sf; //250 is good value
-static const double Kd = 90 * Sf; //5
-static const double Ki = 0.5; // 0.01
+static const double Kd = 150 * Sf; //5
+static const double Ki = 0.25; // 0.01
 
 static const double GOAL = 2;
 static const double STEERING_FACTOR = 1;
@@ -68,6 +70,7 @@ void followLine(motor_t *leftMotor, motor_t *rightMotor){
 		linePosition = getPositionOfColourSource(RED);
 	}*/
 
+	// TEMPORARY STOP CONDITION
 	if (linePosition == -1) {
 		tb6612fng_stop(leftMotor, rightMotor);
 		return;
