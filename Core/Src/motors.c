@@ -141,7 +141,7 @@ static DataPoint rotatePoints[EXP_POINTS_COUNT] = {
 	},
 };
 
-static double interpolateForTime(double targetDisplacement, DataPoint experimentalPoints[], const uint16_t dataPointsCount) {
+static double interpolateForTime(const double targetDisplacement, DataPoint experimentalPoints[], const uint16_t dataPointsCount) {
 	// we should pass +/- distance values (because the motor might behave differently in different directions?). In other words, we should test both forward and backwards directions
 	bool dataPointExists = false;
 

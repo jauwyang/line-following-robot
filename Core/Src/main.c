@@ -125,10 +125,10 @@ static void test_system(motor_t *motor_left, motor_t *motor_right) {
 	HAL_Delay(1500);*/
 
 	// Servo Motors
-	mg995_open_claw();
-	HAL_Delay(4000);
-	mg995_close_claw();
-	HAL_Delay(4000);
+//	mg995_open_claw();
+//	HAL_Delay(4000);
+//	mg995_close_claw();
+//	HAL_Delay(4000);
 
 	// Read Colour Sensors
 
@@ -137,6 +137,17 @@ static void test_system(motor_t *motor_left, motor_t *motor_right) {
 	// Blue:
 	// Green: 16 - 22, 20 - 50, 9 - 30
 	// Red:
+
+	// Test rotation
+
+	// 200 is roughly 90 degrees
+	tb6612fng_move_fwd_single(motor_left, 205);
+	tb6612fng_move_rev_single(motor_right, 205);
+	HAL_Delay(2000);
+	tb6612fng_move_fwd_single(motor_right, 205);
+	tb6612fng_move_rev_single(motor_left, 205);
+	HAL_Delay(2000);
+
 
 //	print_raw_rgb();
 //	print_processed_readings(GREEN);
@@ -235,7 +246,7 @@ int main(void)
   setup_color_sensors();
 
   // Ensure the gripper is open before starting the state machine
-  mg995_open_claw();
+  //mg995_close_claw();
 
   // Initialize robot sequence (state)
   enum RobotSequence currentState = START;
@@ -249,12 +260,15 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  //test_system(&lm, &rm);
-	  //tb6612fng_move_fwd(&lm, &rm, MAX_PWM, MAX_PWM);
-	  //tb6612fng_move_fwd(&lm, &rm, 150, 150);
 	print_raw_rgb();
 	print_processed_readings(RED);
-	stateMachine(&currentState, &lm, &rm);
+     stateMachine(&currentState, &lm, &rm);
+//	  mg995_close_claw();
+//	  HAL_Delay(1500);
+//	  mg995_open_claw();
+//HAL_Delay(1500);
+
+//	test_system(&lm, &rm);
   }
   /* USER CODE END 3 */
 }
@@ -266,6 +280,7 @@ int main(void)
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage

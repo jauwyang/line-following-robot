@@ -18,8 +18,8 @@
  * Angle --> 180 <==> Close
  * Angle -->   0 <==> Open
  */
-#define ROBOT_ANGLE_CLOSE	(uint8_t) 0
-#define ROBOT_ANGLE_OPEN	(uint8_t) 40
+#define ROBOT_ANGLE_CLOSE	(uint8_t) 40
+#define ROBOT_ANGLE_OPEN	(uint8_t) 0
 #define ROBOT_DELAY_MS		(uint32_t) 10
 
 extern TIM_HandleTypeDef htim2;

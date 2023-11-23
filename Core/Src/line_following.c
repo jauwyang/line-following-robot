@@ -120,6 +120,6 @@ void followLine(motor_t *leftMotor, motor_t *rightMotor){
 	}
 
 	// Error, steering value, left motor speed, right motor speed
-//	sprintf(pidstuff, "ERROR: %d  |  STEER: %d  |  SPLEFT: %d  |  SPRIGHT: %d  \r\n", (int)error, (int)steeringAdjustment, (int)leftNewPWM, (int)rightNewPWM);
-//	HAL_UART_Transmit(&huart2, (uint8_t *)pidstuff, strlen(pidstuff), HAL_MAX_DELAY);
+	sprintf(pidstuff, "ERROR: %d  |  STEER: %d  |  SPLEFT: %d  |  SPRIGHT: %d  \r\n", (int)error, (int)steeringAdjustment, (int)leftNewPWM, (int)rightNewPWM);
+	HAL_UART_Transmit(&huart2, (uint8_t *)pidstuff, strlen(pidstuff), HAL_MAX_DELAY);
 }
