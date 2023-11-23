@@ -32,10 +32,23 @@ void followLineToTarget(enum RobotSequence *currentState, motor_t *motorLeft, mo
 }
 
 void pickup(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
+	// Reverse to space from target
 	tb6612fng_move_rev(motorLeft, motorRight, 200, 200);
 	HAL_Delay(1000);
+
+	// Rotate clockwise to aim the target
+	tb6612fng_move_fwd_single(motorLeft, 200);
+	tb6612fng_move_rev_single(motorRight, 200);
+	HAL_Delay(2000);
+
+	// Open claw
 	mg995_open_claw();
-	HAL_Delay(500);
+
+	// Drive toward target
+	tb6612fng_move_fwd(motorLeft, motorRight, 200, 200);
+	HAL_Delay(1000);
+
+	// Close the claw
 	mg995_close_claw();
 	
 	// transition state condition (assumed it has picked up)
@@ -134,7 +147,7 @@ void stateMachine(enum RobotSequence *currentState, motor_t *motorLeft, motor_t 
             break;
 
         case PICKUP:
-        	pickup(currentState);
+        	pickup(currentState, motorLeft, motorRight);
             break;
 
         case BACKUP_FROM_TARGET:
