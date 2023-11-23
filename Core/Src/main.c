@@ -25,6 +25,7 @@
 #include "color/apds9960.h"
 
 #include "state_machine.h"
+#include "colour_sensor.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -51,6 +52,7 @@ I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
 
@@ -65,15 +67,53 @@ static void MX_TIM2_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-char msg[256];
 
-void calibrate_system(motor_t *motor_left, motor_t *motor_right) {
+/**
+ * Testing Functions
+ */
+
+char msg[256];
+char header[256];
+
+static void print_raw_rgb(void) {
+	rgb_cap_t raw[SENSOR_COUNT];
+	readRawColourSensors(raw);
+
+	sprintf(header, "\r\n%s\r\n", "|   1   | 	 2   |   3    |   4   |  5 |");
+	HAL_UART_Transmit(&huart2, (uint8_t *)header, strlen(header), HAL_MAX_DELAY);
+
+	for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+		rgb_cap_t cap = raw[i];
+		sprintf(msg, "(%hu,%hu,%hu)  |  ", cap.red, cap.green, cap.blue);
+		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+	}
+}
+
+static void print_processed_readings(enum Colour colour) {
+	rgb_cap_t raw[SENSOR_COUNT];
+	readRawColourSensors(raw);
+
+	bool proc_readings[SENSOR_COUNT];
+	processColourSensorReadings(proc_readings, raw, colour);
+
+	sprintf(header, "\r\n%s\r\n", "|    1    |    2    |    3    |    4    |    5    |");
+	HAL_UART_Transmit(&huart2, (uint8_t *)header, strlen(header), HAL_MAX_DELAY);
+
+	for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+		bool proc = proc_readings[i];
+		sprintf(msg, "%s", proc ? "X  | " : "-  |  ");
+		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+	}
+}
+
+static void test_system(motor_t *motor_left, motor_t *motor_right) {
 	// DC Motors
 	/*tb6612fng_move_fwd(motor_left, motor_right, 150, 150);
 	HAL_Delay(1500);
@@ -85,10 +125,10 @@ void calibrate_system(motor_t *motor_left, motor_t *motor_right) {
 	HAL_Delay(1500);*/
 
 	// Servo Motors
-	mg995_open_claw_delay(50, 5);
-	HAL_Delay(2000);
-	mg995_close_claw_delay(140, 5);
-	HAL_Delay(2000);
+	mg995_open_claw();
+	HAL_Delay(4000);
+	mg995_close_claw();
+	HAL_Delay(4000);
 
 	// Read Colour Sensors
 
@@ -98,28 +138,30 @@ void calibrate_system(motor_t *motor_left, motor_t *motor_right) {
 	// Green: 16 - 22, 20 - 50, 9 - 30
 	// Red:
 
+//	print_raw_rgb();
+//	print_processed_readings(GREEN);
 
-	/*rgb_cap_t cap = {0};
-	uint16_t red_reference = 1;
-	uint16_t green_reference = 1;
-	uint16_t blue_reference = 1;
-	for (uint8_t i = 0; i < 5; i++) {
-		tcs9548a_select_channel(i);
-		cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
-		sprintf(msg, "Sensor: %hu { R: %hu G: %hu B: %hu\r\n", i, cap.red/red_reference, cap.green/green_reference, cap.blue/blue_reference);
-		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
-		HAL_Delay(1000);
-	}*/
+//	rgb_cap_t cap = {0};
+//	uint16_t red_reference = 1;
+//	uint16_t green_reference = 1;
+//	uint16_t blue_reference = 1;
+//	for (uint8_t i = 0; i < 5; i++) {
+//		tcs9548a_select_channel(i);
+//		cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
+//		sprintf(msg, "Sensor: %hu { R: %hu G: %hu B: %hu\r\n", i, cap.red/red_reference, cap.green/green_reference, cap.blue/blue_reference);
+//		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+//	}
 }
 
-void setup_color_sensors(void) {
+/**
+ * Device Initialization Functions
+ */
+static void setup_color_sensors(void) {
 	for (uint8_t i = 0; i < 5; i++) {
 		tcs9548a_select_channel(i);
 		apds9960_color_init(APDS9960_I2C_ADDR);
 	}
 }
-
-
 
 /* USER CODE END 0 */
 
@@ -130,7 +172,6 @@ void setup_color_sensors(void) {
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  //enum RobotSequence currentState = START;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -155,10 +196,14 @@ int main(void)
   MX_TIM1_Init();
   MX_I2C1_Init();
   MX_USART2_UART_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
   /**
    * Device Initializations
+   *
+   * 32 - Red
+   *
    */
 
   // MG995 Servo Motor
@@ -186,6 +231,8 @@ int main(void)
   // APDS9960 Colour Sensors
   setup_color_sensors();
 
+  // Ensure the gripper is open before starting the state machine
+  mg995_open_claw();
 
   // Initialize robot sequence (state)
   enum RobotSequence currentState = START;
@@ -199,8 +246,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  calibrate_system(&lm, &rm);
-	  //stateMachine(&currentState, &lm, &rm);
+	  //test_system(&lm, &rm);
+	  //tb6612fng_move_fwd(&lm, &rm, MAX_PWM, MAX_PWM);
+	  //tb6612fng_move_fwd(&lm, &rm, 150, 150);
+	print_raw_rgb();
+	print_processed_readings(RED);
+	stateMachine(&currentState, &lm, &rm);
   }
   /* USER CODE END 3 */
 }
@@ -306,7 +357,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 840-1;
+  htim1.Init.Prescaler = 1680-1;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 1000-1;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -420,6 +471,51 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 2 */
   HAL_TIM_MspPostInit(&htim2);
+
+}
+
+/**
+  * @brief TIM3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM3_Init(void)
+{
+
+  /* USER CODE BEGIN TIM3_Init 0 */
+
+  /* USER CODE END TIM3_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM3_Init 1 */
+
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 42000-1;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 65535;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM3_Init 2 */
+
+  /* USER CODE END TIM3_Init 2 */
 
 }
 

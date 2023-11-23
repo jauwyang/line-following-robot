@@ -3,6 +3,7 @@
 "./Core/Src/colour_sensor.o"
 "./Core/Src/line_following.o"
 "./Core/Src/main.o"
+"./Core/Src/motors.o"
 "./Core/Src/state_machine.o"
 "./Core/Src/stm32f4xx_hal_msp.o"
 "./Core/Src/stm32f4xx_it.o"

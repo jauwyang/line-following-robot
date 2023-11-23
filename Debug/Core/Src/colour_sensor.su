@@ -1,7 +1,7 @@
-../Core/Src/colour_sensor.c:12:6:isRed	16	static
-../Core/Src/colour_sensor.c:21:6:isGreen	16	static
-../Core/Src/colour_sensor.c:31:6:isBlue	16	static
-../Core/Src/colour_sensor.c:41:6:readRawColourSensors	24	static
-../Core/Src/colour_sensor.c:52:6:processColourSensorReadings	48	static
-../Core/Src/colour_sensor.c:88:10:countMatchingSensorColourDetections	80	dynamic
-../Core/Src/colour_sensor.c:105:8:getPositionOfColourSource	104	dynamic
+../Core/Src/colour_sensor.c:34:6:readRawColourSensors	24	static
+../Core/Src/colour_sensor.c:45:6:isInChannelBounds	16	static
+../Core/Src/colour_sensor.c:49:10:getAverageChannelValues	16	static
+../Core/Src/colour_sensor.c:53:6:isColourDetected	32	static
+../Core/Src/colour_sensor.c:79:6:processColourSensorReadings	40	static
+../Core/Src/colour_sensor.c:98:10:countMatchingSensorColourDetections	112	dynamic
+../Core/Src/colour_sensor.c:115:8:getPositionOfColourSource	136	dynamic

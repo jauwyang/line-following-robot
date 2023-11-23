@@ -32,5 +32,4 @@ void followLineToStart(enum RobotSequence *currentState, motor_t *motorLeft, mot
 void end(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
 void stateMachine(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
 
-
 #endif // STATE_MACHINE_H

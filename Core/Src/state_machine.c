@@ -6,25 +6,24 @@
 
 #include <stdio.h>
 
-// find out if a colour has been detected (set number of them has been detected)
-// follow line (location of estimated line source)
-// create
-
 void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
-	uint16_t motorPWM = 1; // TODO: Change later (not max?)
-	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
+	// transition state condition (switch automatically, START only used as entry point)
+	*currentState = FOLLOW_LINE_TO_TARGET;
 
-	// transition state condition (starting line detected)
-	uint32_t requiredSensorColourMatches = 4;
-	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches){ 
-		*currentState = FOLLOW_LINE_TO_TARGET;
-	}
+	//	uint16_t motorPWM = 1; // TODO: Change later (not max?)
+//	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
+//
+//	// transition state condition (starting line detected)
+//	uint32_t requiredSensorColourMatches = 4;
+//	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches){
+//		*currentState = FOLLOW_LINE_TO_TARGET;
+//	}
 }
 
 void followLineToTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	followLine(motorLeft, motorRight);
 
-	uint8_t middleSensorPosition = (ceil(SENSOR_COUNT / 2));
+	uint8_t middleSensorPosition = (floor(SENSOR_COUNT / 2.0));
 
 	// transition state condition (target detected & is lined up to its center)
 	if (getPositionOfColourSource(BLUE) == middleSensorPosition){
@@ -50,13 +49,9 @@ void backupFromTarget(enum RobotSequence *currentState, motor_t *motorLeft, moto
 
 void rotateToSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	//run command to rotate motor X amount
-	rotation_t rotation_params = {
-		.angle = 0,	// TODO: Change later for 90 degrees
-		.direction = DIR_CCW
-	};
 
 	// Rotate 90 degrees CCW
-	tb6612fng_rotate(motorLeft, motorRight, rotation_params);
+	//tb6612fng_rotate(motorLeft, motorRight, rotation_params);
 
 	// transition state condition (assumed it has rotated)
 	*currentState = OFF_TRACK_TO_SAFE_ZONE_DRIVE;
@@ -94,13 +89,9 @@ void backUpFromSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, mo
 }
 
 void rotateToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
-	rotation_t rotation_params =  {
-		.angle = 0,	// TODO: Change later for 180 degrees
-		.direction = DIR_CCW
-	};
 
 	// Rotate 180 degrees CCW
-	tb6612fng_rotate(motorLeft, motorRight, rotation_params);
+	//tb6612fng_rotate(motorLeft, motorRight, rotation_params);
 	*currentState = DRIVE_TO_TRACK;
 }
 
@@ -121,7 +112,7 @@ void followLineToStart(enum RobotSequence *currentState, motor_t *motorLeft, mot
 	followLine(motorLeft, motorRight);
 	
 	// transition state condition (start/end line detected)
-	uint32_t requiredSensorColourMatches = 4;
+	uint8_t requiredSensorColourMatches = 3;
 	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches) {
 		*currentState = END;
 	}

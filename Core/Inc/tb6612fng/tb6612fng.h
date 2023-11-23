@@ -3,25 +3,8 @@
 
 #include <stm32f4xx_hal.h>
 
-static const uint32_t MAX_RPM = 0;
-static const uint32_t MIN_RPM = 0;
-static const uint32_t MAX_PWM = 570;
-static const uint32_t MIN_PWM = 90;
-
-
-typedef enum _direction_e {
-
-	DIR_CW = 0,
-	DIR_CCW
-
-} direction_e;
-
-typedef struct _rotation_t {
-
-	uint16_t angle;
-	direction_e direction;
-
-} rotation_t;
+static const uint32_t MAX_PWM = 550 * 0.8;
+static const uint32_t MIN_PWM = 0;
 
 /**
  * Port-pin sequence is as follows:
@@ -50,6 +33,5 @@ void tb6612fng_stop_single(motor_t *motor);
 void tb6612fng_move_fwd(motor_t *motor_left, motor_t *motor_right, uint16_t pwm_val_left, uint16_t pwm_val_right);
 void tb6612fng_move_rev(motor_t *motor_left, motor_t *motor_right, uint16_t pwm_val_left, uint16_t pwm_val_right);
 void tb6612fng_stop(motor_t *motor_left, motor_t *motor_right);
-void tb6612fng_rotate(motor_t *motor_left, motor_t *motor_right, rotation_t rotation);
 
 #endif // LINE_FOLLOWING_ROBOT_MOTOR_TB6612FNG_H

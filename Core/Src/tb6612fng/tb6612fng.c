@@ -60,7 +60,3 @@ void tb6612fng_stop(motor_t *motor_left, motor_t *motor_right) {
 	tb6612fng_stop_single(motor_left);
 	tb6612fng_stop_single(motor_right);
 }
-
-void tb6612fng_rotate(motor_t *motor_left, motor_t *motor_right, rotation_t rotation) {
-
-}

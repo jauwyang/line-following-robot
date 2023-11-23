@@ -1,70 +1,125 @@
 #include "line_following.h"
 #include "colour_sensor.h"
+#include <stm32f4xx_hal.h>
+#include <string.h>
+#include <stdio.h>
+
+extern UART_HandleTypeDef huart2;
+
+char pidstuff[256];
 
 // PID Gain Constants
-static const double Kp = 50;
-static const double Kd = 0;
-static const double Ki = 0;
+/**
+ * TESTS - Best is at bottom Nov 22 2023
+ * P I D
+ * 250, 0, 0
+ * 285, 60, 0
+ * 285 50 0
+ * 275, 85, 0
+ * 275 * 1.15, 90 * 1.15, 0.5, RPM = 550 * 0.8
+ * 275 * 1.2, 90 * 1.2, 0.5, RPM = 550 * 0.8
+ * 275 * 1.15, 150 * 1.15, 0.25 * 1.15, RPM = 550 * 0.8
+ */
 
-static const double GOAL =3001;
-static const double STEERING_FACTOR = 1;  //TODO: SCALE THE VALUES SO THAT (I.E. HOW MUCH THE THING SHOULD TURN)
-static const double RPM2PWM_FACTOR = 1;  //TODO: ADJUST K TO CONVERT RPM TO PWM HERE
+const double Sf = 1.15;
 
+static const double Kp = 275 * Sf; //250 is good value
+static const double Kd = 150 * Sf; //5
+static const double Ki = 0.25; // 0.01
 
-double getPathLinePosition(void){
-	double linePosition = getPositionOfColourSource(RED);
-	return linePosition;
-}
+static const double GOAL = 2;
+static const double STEERING_FACTOR = 1;
 
+// Use the previous error
+static double previousError = 0;
+static double error = 0;
 
 double PIDAlgorithm(double currentLinePosition) {
-	static double previousError = 0;
+	static double errorIntegral = 0;
 
-	double error = GOAL - currentLinePosition;
+	error = GOAL - 1 * currentLinePosition;
 
 	double errorDerivative = error - previousError;
-	double errorIntegral = errorIntegral + error;
+	errorIntegral = errorIntegral + error;
 
 	double steeringValue = Kp*error + Ki*errorIntegral + Kd*errorDerivative;
 
 	previousError = error;
 
 	return STEERING_FACTOR*steeringValue;
-	
 }
-
-
-double convertRPM2PWM(double rpm){
-	return RPM2PWM_FACTOR*rpm;
-}
-
 
 void followLine(motor_t *leftMotor, motor_t *rightMotor){
-	double linePosition = getPathLinePosition();
+	double linePosition = getPositionOfColourSource(RED);
+
+	/**
+	 * Check if none of the sensors are detecting the line (off the line).
+	 * Use the previousError to determine which way to steer.
+	 * If currentLinePosition > GOAL: steer right
+	 * If currentLinePosition < GOAL: steer left
+	 */
+	/*while (linePosition == -1) {
+		if (previousError < 0) {
+			tb6612fng_move_fwd(leftMotor, rightMotor, MIN_PWM, MAX_PWM);
+
+		} else {
+			tb6612fng_move_fwd(leftMotor, rightMotor, MAX_PWM, MIN_PWM);
+		}
+
+		// Update the linePosition each iteration
+		linePosition = getPositionOfColourSource(RED);
+	}*/
+
+	// TEMPORARY STOP CONDITION
+	if (linePosition == -1) {
+		tb6612fng_stop(leftMotor, rightMotor);
+		return;
+	}
+
+	// At least one sensor is now back on the line; proceed with computing the steering adjustment
 	double steeringAdjustment = PIDAlgorithm(linePosition);
-	
-	// this "left vs right" of the positive/negative sign of the steeringAdjustment depends on the sensor numbering
-	if (steeringAdjustment > 0){  // is on the right
-		double newRPM = MAX_RPM - steeringAdjustment;
-		if (newRPM < MIN_RPM) {  // TODO: WHAT IF WE ACTUALLY NEED THE MOTOR TO NOT MOVE?
-			newRPM = MIN_RPM;  
+	double leftNewPWM = 0;
+	double rightNewPWM = 0;
+
+	// Use MAX_PWM: all newPWMs are less than MAX_PWM
+	if (error < 0){  // is on the right, need to turn right
+		if (steeringAdjustment < 0) {
+			rightNewPWM = MAX_PWM + steeringAdjustment;
+		} else {
+			rightNewPWM = MAX_PWM - steeringAdjustment;
 		}
 
-		double newPWM = convertRPM2PWM(newRPM);
-
-		tb6612fng_move_fwd_single(rightMotor, newPWM);
-		tb6612fng_move_fwd_single(leftMotor, MAX_PWM);
-	}
-
-	else { // steeringAdjustment is negative (line is to the left)
-		double newRPM = MAX_RPM + steeringAdjustment;
-		if (newRPM < MIN_RPM) {  // TODO: WHAT IF WE ACTUALLY NEED THE MOTOR TO NOT MOVE?
-			newRPM = MIN_RPM;
+		if (rightNewPWM < MIN_PWM) {
+			rightNewPWM = MIN_PWM;
 		}
 
-		double newPWM = convertRPM2PWM(newRPM);
+		if (rightNewPWM > MAX_PWM) {
+			rightNewPWM = MAX_PWM;
+		}
 
-		tb6612fng_move_fwd_single(rightMotor, MAX_PWM);
-		tb6612fng_move_fwd_single(leftMotor, newPWM);
+		leftNewPWM = MAX_PWM;
+		tb6612fng_move_fwd(leftMotor, rightMotor, rightNewPWM, leftNewPWM); // FLIPPED IS CORRECT
 	}
+
+	else { // Line is on the left, need to turn left
+		if (steeringAdjustment > 0) {
+			leftNewPWM = MAX_PWM - steeringAdjustment;
+		} else {
+			leftNewPWM = MAX_PWM + steeringAdjustment;
+		}
+		if (leftNewPWM < MIN_PWM) {
+			leftNewPWM = MIN_PWM;
+		}
+
+		if (leftNewPWM > MAX_PWM) {
+			leftNewPWM = MAX_PWM;
+		}
+
+		rightNewPWM = MAX_PWM;
+		tb6612fng_move_fwd(leftMotor, rightMotor, rightNewPWM, leftNewPWM); //FLIPPED IS CORRECT
+	}
+
+	// Error, steering value, left motor speed, right motor speed
+//	sprintf(pidstuff, "ERROR: %d  |  STEER: %d  |  SPLEFT: %d  |  SPRIGHT: %d  \r\n", (int)error, (int)steeringAdjustment, (int)leftNewPWM, (int)rightNewPWM);
+//	HAL_UART_Transmit(&huart2, (uint8_t *)pidstuff, strlen(pidstuff), HAL_MAX_DELAY);
 }

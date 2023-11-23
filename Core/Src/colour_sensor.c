@@ -1,55 +1,82 @@
 #include "colour_sensor.h"
+#include "string.h"
 
-#include "color/apds9960.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 
-//>>>> COLOUR FREQUENCY RANGE<<<<//
-static const colourFrequency Red = { 1, 0 };
-static const colourFrequency Green = { 2, 0 };
-static const colourFrequency Blue = { 3, 0 };
+static const uint16_t infinitySensor = 10000;
 
-bool isRed(uint32_t rawColourFrequency){
-	if (rawColourFrequency > Red.lowerBoundFrequency &&
-		rawColourFrequency < Red.upperBoundFrequency){
-		return true;
-	}
+static const tapeColourBounds relativeRed = {
+	.red = {-1 , -1},
+	.green = {22, infinitySensor},
+	.blue = {22, infinitySensor},
+	.tapeColour = RED,
+};
 
-	return false;
-}
+static const uint16_t greenTapeAverageRequirement = 100;
 
-bool isGreen(uint32_t rawColourFrequency){
-	if (rawColourFrequency > Green.lowerBoundFrequency &&
-		rawColourFrequency < Green.upperBoundFrequency){
-		return true;
-	}
+//static const tapeColourBounds relativeGreen = {
+//	.red = {-1 , -1},
+//	.green = {200, 300},
+//	.blue = {200, 300},
+//	.tapeColour = GREEN,
+//};
 
-	return false;
+static const tapeColourBounds relativeBlue = {
+	.red = {40, infinitySensor},
+	.green = {40, infinitySensor},
+	.blue = {-1, -1},
+	.tapeColour = BLUE,
+};
 
-}
 
-bool isBlue(uint32_t rawColourFrequency){
-	if (rawColourFrequency > Blue.lowerBoundFrequency &&
-		rawColourFrequency < Blue.upperBoundFrequency){
-		return true;
-	}
-
-	return false;
-}
-
-// This function assumes that the
-void readRawColourSensors(uint32_t rawSensorReadings[]){
+void readRawColourSensors(rgb_cap_t rawSensorReadings[]){
 	rgb_cap_t cap = {0};
-	for (uint8_t i = 0; i < 5; i++) {
+	for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
 		tcs9548a_select_channel(i);
-		HAL_Delay(5);
 		cap = apds9960_read_rgb(APDS9960_I2C_ADDR);
 
+		rawSensorReadings[i] = cap;
 	}
 }
 
 
-void processColourSensorReadings(bool processedSensorReadings[], uint32_t rawSensorReadings[], enum Colour targetColourName){
+bool isInChannelBounds(uint16_t singleChannelReading, channelBounds bounds){
+	return singleChannelReading > bounds.lowerBound && singleChannelReading < bounds.upperBound;
+}
+
+uint16_t getAverageChannelValues(rgb_cap_t sensorReading){
+	return (sensorReading.red + sensorReading.green + sensorReading.blue)/3;
+}
+
+bool isColourDetected(enum Colour tapeColour, rgb_cap_t sensorReading){
+	switch (tapeColour){
+		case RED: {
+			uint16_t diffG = sensorReading.red - sensorReading.green;
+			uint16_t diffB = sensorReading.red - sensorReading.blue;
+
+			return (isInChannelBounds(diffG, relativeRed.green) &&
+					isInChannelBounds(diffB, relativeRed.blue));
+		}
+		case GREEN: {
+			return getAverageChannelValues(sensorReading) < greenTapeAverageRequirement;
+		}
+		case BLUE: {
+			uint16_t diffR = sensorReading.blue - sensorReading.red;
+			uint16_t diffG = sensorReading.blue - sensorReading.green;
+
+			return (isInChannelBounds(diffR, relativeBlue.red) &&
+					isInChannelBounds(diffG, relativeBlue.green));
+		}
+		default:
+			printf("UNDEFINED COLOUR"); // left to crash
+			return false;
+	}
+}
+
+
+void processColourSensorReadings(bool processedSensorReadings[], rgb_cap_t rawSensorReadings[], enum Colour targetColourName){
 	/**
 	 * This converts the raw sensor readings to an array of true/false depending whether the target colour has
 	 * been detected.
@@ -62,31 +89,14 @@ void processColourSensorReadings(bool processedSensorReadings[], uint32_t rawSen
 	 */
 
 	// detect for a specific colour given the desired colourName
-	switch (targetColourName){
-		case RED:
-			for (uint32_t i = 0; i < SENSOR_COUNT; i++){
-				processedSensorReadings[i] = isRed(rawSensorReadings[i]);
-			}
-			break;
-		case GREEN:
-			for (uint32_t i = 0; i < SENSOR_COUNT; i++){
-				processedSensorReadings[i] = isGreen(rawSensorReadings[i]);
-			}
-			break;
-		case BLUE:
-			for (uint32_t i = 0; i < SENSOR_COUNT; i++){
-				processedSensorReadings[i] = isBlue(rawSensorReadings[i]);
-			}
-			break;
-		default:
-			printf("UNDEFINED COLOUR");
-			break;
+	for (uint32_t i = 0; i < SENSOR_COUNT; i++){
+		processedSensorReadings[i] = isColourDetected(targetColourName, rawSensorReadings[i]);
 	}
 }
 
 
 uint32_t countMatchingSensorColourDetections(enum Colour targetColourName){
-	uint32_t rawSensorReadings[SENSOR_COUNT];
+	rgb_cap_t rawSensorReadings[SENSOR_COUNT];
 	readRawColourSensors(rawSensorReadings);
 
 	bool processedSensorReadings[SENSOR_COUNT];
@@ -113,7 +123,7 @@ double getPositionOfColourSource(enum Colour targetColourName){
 	 * @return getPositionOfLine Returns value relative to position of source to robot.
 	 */
 
-	uint32_t rawSensorReadings[SENSOR_COUNT];
+	rgb_cap_t rawSensorReadings[SENSOR_COUNT];
 	readRawColourSensors(rawSensorReadings);
 
 	bool processedSensorReadings[SENSOR_COUNT];
@@ -127,6 +137,9 @@ double getPositionOfColourSource(enum Colour targetColourName){
 			detectedColourIndicesSum = detectedColourIndicesSum + i;
 			detectedColourCount++;
 		}
+	}
+	if (detectedColourCount == 0) {
+		return -1;
 	}
 	double colourSourceLocation = detectedColourIndicesSum / detectedColourCount;
 

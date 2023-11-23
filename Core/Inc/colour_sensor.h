@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "color/apds9960.h"
+
 static const uint8_t SENSOR_COUNT = 5;
 
 enum Colour {
@@ -13,21 +15,31 @@ enum Colour {
 	BLUE,
 };
 
-typedef struct _colourFrequency {
+// currentChannel - otherChannel
+// (+) if currentChannel is larger
+// (-) if current Channel
+typedef struct _channelBounds {
+	uint16_t lowerBound;
+	uint16_t upperBound;
+} channelBounds;
 
-	uint32_t upperBoundFrequency;
-	uint32_t lowerBoundFrequency;
-
-} colourFrequency;
-
-bool isRed(uint32_t rawColourFrequency);
-bool isGreen(uint32_t rawColourFrequency);
-bool isBlue(uint32_t rawColourFrequency);
+typedef struct _tapeColourBounds{
+	channelBounds red;
+	channelBounds green;
+	channelBounds blue;
+	enum Colour tapeColour;
+} tapeColourBounds;
 
 
-void readRawColourSensors(uint32_t rawSensorReadings[]);
+void readRawColourSensors(rgb_cap_t rawSensorReadings[]);
 
-void processColourSensorReadings(bool processedSensorReadings[], uint32_t rawSensorReadings[], enum Colour targetColourName);
+bool isInChannelBounds(uint16_t singleChannelReading, channelBounds bounds);
+
+uint16_t getAverageChannelValues(rgb_cap_t sensorReading);
+
+bool isColourDetected(enum Colour tapeColour, rgb_cap_t sensorReading);
+
+void processColourSensorReadings(bool processedSensorReadings[], rgb_cap_t rawSensorReadings[], enum Colour targetColourName);
 
 uint32_t countMatchingSensorColourDetections(enum Colour targetColourName);
 
