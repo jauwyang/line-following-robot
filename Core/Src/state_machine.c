@@ -146,10 +146,10 @@ void followLineToStart(enum RobotSequence *currentState, motor_t *motorLeft, mot
 	followLine(motorLeft, motorRight);
 	
 	// Start/end line is detected
-	uint8_t requiredSensorColourMatches = 3;
-	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches) {
-		*currentState = END;
-	}
+//	uint8_t requiredSensorColourMatches = 3;
+//	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches) {
+//		*currentState = END;
+//	}
 }
 
 void end(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){

@@ -67,7 +67,7 @@ bool isColourDetected(enum Colour tapeColour, rgb_cap_t sensorReading){
 			uint16_t diffG = sensorReading.blue - sensorReading.green;
 
 			return (isInChannelBounds(diffR, relativeBlue.red) &&
-					isInChannelBounds(diffG, relativeBlue.green));
+					isInChannelBounds(diffG, relativeBlue.green) && getAverageChannelValues(sensorReading) > greenTapeAverageRequirement);
 		}
 		default:
 			printf("UNDEFINED COLOUR"); // left to crash

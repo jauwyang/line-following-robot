@@ -100,15 +100,15 @@ static void print_raw_rgb(void) {
 		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 	}
 
-	// Output to .txt
-	FILE *file = fopen("raw_rgb.txt", "w");
-	if (file == NULL) {
-		//F
-		return;
-	}
-	fprintf(file, "%s\n", header);
-	fprintf(file, "%s\n", msg);
-	fclose(file);
+//	// Output to .txt
+//	FILE *file = fopen("raw_rgb.txt", "w");
+//	if (file == NULL) {
+//		//F
+//		return;
+//	}
+//	fprintf(file, "%s\n", header);
+//	fprintf(file, "%s\n", msg);
+//	fclose(file);
 }
 
 static void print_processed_readings(enum Colour colour) {
@@ -129,15 +129,15 @@ static void print_processed_readings(enum Colour colour) {
 
 	}
 
-	// Output to .txt
-	FILE *file = fopen("processed_rgb.txt", "w");
-	if (file == NULL) {
-		//F
-		return;
-	}
-	fprintf(file, "%s\n", header);
-	fprintf(file, "%s\n", msg);
-	fclose(file);
+//	// Output to .txt
+//	FILE *file = fopen("processed_rgb.txt", "w");
+//	if (file == NULL) {
+//		//F
+//		return;
+//	}
+//	fprintf(file, "%s\n", header);
+//	fprintf(file, "%s\n", msg);
+//	fclose(file);
 
 }
 
@@ -277,8 +277,9 @@ int main(void)
   mg995_close_claw();
 
   // Initialize robot sequence (state)
-  enum RobotSequence currentState = START;
-//  enum RobotSequence_start currentState_start = START_START;
+//  enum RobotSequence currentState = START;
+  enum RobotSequence_start currentState_start = START_START;
+//  currentState_start = ROTATE_TO_LINE_START;
 
 
   /* USER CODE END 2 */
@@ -324,6 +325,7 @@ int main(void)
 //	  bool processedREDSensorReadings[5];
 //	  processColourSensorReadings(processedREDSensorReadings, rawSensorReadings, RED);
 //	  if (processedREDSensorReadings[1]) {
+
 //		  tb6612fng_move_fwd_single(&rm, MAX_PWM);
 //	  } else {
 //		  tb6612fng_move_fwd_single(&rm, 0);
@@ -340,9 +342,10 @@ int main(void)
 
 	print_raw_rgb();
 	print_processed_readings(RED);
+	//print_processed_readings(GREEN);
 //	print_processed_readings(BLUE);
-//	 stateMachine_start(&currentState_start, &lm, &rm);
-     stateMachine(&currentState, &lm, &rm);
+	 stateMachine_start(&currentState_start, &lm, &rm);
+//     stateMachine(&currentState, &lm, &rm);
 ////	  tb6612fng_move_fwd(&lm, &rm, MAX_PWM - 22, MAX_PWM);
 
 //	  mg995_close_claw();

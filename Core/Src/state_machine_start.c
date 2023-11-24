@@ -73,16 +73,17 @@ void rotateToLine_start(enum RobotSequence_start *currentState, motor_t *motorLe
 	// Rotate 90 degrees CCW
 	tb6612fng_move_rev_single(motorLeft, 200);
 	tb6612fng_move_fwd_single(motorRight, 200);
-	HAL_Delay(750);
+	HAL_Delay(970);
 	tb6612fng_stop(motorLeft, motorRight);
+	HAL_Delay(1000);
 
 	*currentState = DRIVE_TO_LINE_START;
 
 }
 
 void driveToLine_start(enum RobotSequence_start *currentState, motor_t *motorLeft, motor_t *motorRight) {
-	tb6612fng_move_rev(motorLeft, motorRight, 200, 200);
-
+	tb6612fng_move_fwd(motorLeft, motorRight, 200, 200);
+//	HAL_Delay(00);
 	if (countMatchingSensorColourDetections(RED) > 0){
 		tb6612fng_stop(motorLeft, motorRight);
 	//		HAL_Delay(700);
@@ -95,9 +96,9 @@ void followLineToStart_start(enum RobotSequence_start *currentState, motor_t *mo
 
 	// Start/end line is detected
 	uint8_t requiredSensorColourMatches = 3;
-	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches) {
-		*currentState = END_START;
-	}
+//	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches) {
+//		*currentState = END_START;
+//	}
 }
 
 void end_start(enum RobotSequence_start *currentState, motor_t *motorLeft, motor_t *motorRight){
@@ -125,6 +126,10 @@ void stateMachine_start(enum RobotSequence_start *currentState, motor_t *motorLe
 
 	 case ROTATE_TO_LINE_START:
 		 rotateToLine_start(currentState, motorLeft, motorRight);
+		 break;
+
+	 case DRIVE_TO_LINE_START:
+		 driveToLine_start(currentState, motorLeft, motorRight);
 		 break;
 
 	 case FOLLOW_LINE_TO_START_START:
