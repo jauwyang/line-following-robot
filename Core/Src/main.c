@@ -28,6 +28,10 @@
 #include "state_machine.h"
 #include "colour_sensor.h"
 
+#include "state_machine_start.h"
+#include "color/apds9960.h"
+
+#include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -95,6 +99,16 @@ static void print_raw_rgb(void) {
 		sprintf(msg, "(%hu,%hu,%hu)  |  ", cap.red, cap.green, cap.blue);
 		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 	}
+
+	// Output to .txt
+	FILE *file = fopen("raw_rgb.txt", "w");
+	if (file == NULL) {
+		//F
+		return;
+	}
+	fprintf(file, "%s\n", header);
+	fprintf(file, "%s\n", msg);
+	fclose(file);
 }
 
 static void print_processed_readings(enum Colour colour) {
@@ -114,6 +128,17 @@ static void print_processed_readings(enum Colour colour) {
 
 
 	}
+
+	// Output to .txt
+	FILE *file = fopen("processed_rgb.txt", "w");
+	if (file == NULL) {
+		//F
+		return;
+	}
+	fprintf(file, "%s\n", header);
+	fprintf(file, "%s\n", msg);
+	fclose(file);
+
 }
 
 static void test_system(motor_t *motor_left, motor_t *motor_right) {
@@ -253,6 +278,8 @@ int main(void)
 
   // Initialize robot sequence (state)
   enum RobotSequence currentState = START;
+//  enum RobotSequence_start currentState_start = START_START;
+
 
   /* USER CODE END 2 */
 
@@ -269,17 +296,52 @@ int main(void)
 //	tb6612fng_stop(&lm, &rm);
 
 
+//	 pickup(PICKUP, &lm, &rm);
+//	 return;
+//	tb6612fng_move_fwd_single(&lm, 200);
+//	tb6612fng_move_rev_single(&rm, 200);
+//	HAL_Delay(1300);
+//	tb6612fng_stop(&lm, &rm);
+//
+//
+//	return;
+//  currentState = PICKUP;
+
+//  currentState = BACKUP_FROM_TARGET;
+//  currentState = DRIVE_TO_TRACK;
 
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	print_raw_rgb();
-//	print_processed_readings(RED);
-//	print_processed_readings(BLUE);
-//	 pickup(PICKUP, &lm, &rm);
 
+
+	  //CALIRBRATION TEST (MUST TURN OFFFF
+//	  rgb_cap_t rawSensorReadings[5];
+//	  readRawColourSensors(rawSensorReadings);
+//
+//	  bool processedREDSensorReadings[5];
+//	  processColourSensorReadings(processedREDSensorReadings, rawSensorReadings, RED);
+//	  if (processedREDSensorReadings[1]) {
+//		  tb6612fng_move_fwd_single(&rm, MAX_PWM);
+//	  } else {
+//		  tb6612fng_move_fwd_single(&rm, 0);
+//	  }
+//
+//	  bool processedGREENSensorReadings[5];
+//	  processColourSensorReadings(processedGREENSensorReadings, rawSensorReadings, GREEN);
+//	  if (processedGREENSensorReadings[1]) {
+//		  tb6612fng_move_fwd_single(&lm, MAX_PWM);
+//	  } else {
+//		  tb6612fng_move_fwd_single(&lm, 0);
+//	  }
+
+
+	print_raw_rgb();
+	print_processed_readings(RED);
+//	print_processed_readings(BLUE);
+//	 stateMachine_start(&currentState_start, &lm, &rm);
      stateMachine(&currentState, &lm, &rm);
 ////	  tb6612fng_move_fwd(&lm, &rm, MAX_PWM - 22, MAX_PWM);
 

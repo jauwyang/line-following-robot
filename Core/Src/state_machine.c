@@ -25,7 +25,7 @@ void followLineToTarget(enum RobotSequence *currentState, motor_t *motorLeft, mo
 	// Target detected and lined up to center
 	if (countMatchingSensorColourDetections(BLUE) > 0){
 		tb6612fng_stop(motorLeft, motorRight);
-		HAL_Delay(2000);
+//		HAL_Delay(700);
 		*currentState = PICKUP;
 		return;
 	}
@@ -40,17 +40,17 @@ void pickup(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motor
 //	mg995_close_claw();
 
 	// Reverse to space from target
-	HAL_Delay(1000);
+	HAL_Delay(500);
 	tb6612fng_move_rev(motorLeft, motorRight, 200 - 22, 200);
-	HAL_Delay(470);
+	HAL_Delay(400);
 	tb6612fng_stop(motorLeft, motorRight);
-	HAL_Delay(1000);
+	HAL_Delay(500);
 	mg995_open_claw();
 
 	// Rotate clockwise to aim the target
 	tb6612fng_move_rev_single(motorLeft, 75);
 	tb6612fng_move_fwd_single(motorRight, 75);
-	HAL_Delay(300);
+	HAL_Delay(290);
 //	tb6612fng_stop(motorLeft, motorRight);
 
 	// Open claw
@@ -71,7 +71,7 @@ void pickup(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motor
 void backupFromTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	uint16_t motorPWM = 200;
 	tb6612fng_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
-	HAL_Delay(1500);
+	HAL_Delay(1400);
 
 	tb6612fng_stop(motorLeft, motorRight);
 	// transition state condition (assume it has finished backing up)
@@ -82,14 +82,18 @@ void rotateToSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, moto
 	// Rotate 90 degrees CCW
 	tb6612fng_move_rev_single(motorRight, 200);
 	tb6612fng_move_fwd_single(motorLeft, 200);
-	HAL_Delay(850);
+	HAL_Delay(750);
+	tb6612fng_stop(motorLeft, motorRight);
 
 	*currentState = OFF_TRACK_TO_SAFE_ZONE_DRIVE;
 }
 
 void offTrackToSafeZoneDrive(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	uint16_t motorPWM = 250;
-	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
+	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM , motorPWM);
+//	HAL_Delay(1550);
+//	tb6612fng_stop(motorLeft, motorRight);
+
 
 	uint8_t middleSensorPosition = (ceil(SENSOR_COUNT / 2));
 
@@ -111,6 +115,7 @@ void backUpFromSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, mo
 	uint16_t motorPWM = 200;
 	tb6612fng_move_rev(motorLeft, motorRight, motorPWM - 22, motorPWM);
 	HAL_Delay(3500);
+	tb6612fng_stop(motorLeft, motorRight);
 
 	*currentState = ROTATE_TO_TRACK;
 }
@@ -120,7 +125,8 @@ void rotateToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t
 	uint16_t motorPWM = 200;
 	tb6612fng_move_fwd_single(motorLeft, motorPWM);
 	tb6612fng_move_rev_single(motorRight, motorPWM);
-	HAL_Delay(1000);
+	HAL_Delay(900);
+//	tb6612fng_stop(motorLeft, motorRight);
 
 	*currentState = DRIVE_TO_TRACK;
 }
@@ -128,9 +134,10 @@ void rotateToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t
 void driveToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
 	uint16_t motorPWM = 250;
 	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
+	HAL_Delay(100);
 
 	// Drive forward until middle sensor detects red line
-	if (getPositionOfColourSource(RED) == ceil(SENSOR_COUNT / 2)) {
+	if (countMatchingSensorColourDetections(RED) > 0) {
 		*currentState = FOLLOW_LINE_TO_START;
 	}
 }

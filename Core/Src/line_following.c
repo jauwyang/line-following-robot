@@ -71,7 +71,7 @@ void followLine(motor_t *leftMotor, motor_t *rightMotor){
 		linePosition = getPositionOfColourSource(RED);
 	}
 
-	// TEMPORARY STOP CONDITION
+//	 TEMPORARY STOP CONDITION
 //	if (linePosition == -1) {
 //		tb6612fng_stop(leftMotor, rightMotor);
 //		return;

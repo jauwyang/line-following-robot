@@ -18,7 +18,7 @@
  * Angle --> 180 <==> Close
  * Angle -->   0 <==> Open
  */
-#define ROBOT_ANGLE_CLOSE	(uint8_t) 50
+#define ROBOT_ANGLE_CLOSE	(uint8_t) 70
 #define ROBOT_ANGLE_OPEN	(uint8_t) 0
 #define ROBOT_DELAY_MS		(uint32_t) 10
 
