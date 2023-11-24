@@ -3,7 +3,7 @@
 
 #include <stm32f4xx_hal.h>
 
-static const uint32_t MAX_PWM = 570*0.8;
+static const uint32_t MAX_PWM = 570*0.4;
 static const uint32_t MIN_PWM = 0;
 
 /**

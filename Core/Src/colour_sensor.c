@@ -24,8 +24,8 @@ static const uint16_t greenTapeAverageRequirement = 100;
 //};
 
 static const tapeColourBounds relativeBlue = {
-	.red = {16, infinitySensor},
-	.green = {16, infinitySensor},
+	.red = {12, infinitySensor},
+	.green = {12, infinitySensor},
 	.blue = {-1, -1},
 	.tapeColour = BLUE,
 };

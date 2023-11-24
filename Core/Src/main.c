@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "mg995/mg995.h"
 #include "color/apds9960.h"
+#include "tb6612fng/tb6612fng.h"
 
 #include "state_machine.h"
 #include "colour_sensor.h"
@@ -110,6 +111,8 @@ static void print_processed_readings(enum Colour colour) {
 		bool proc = proc_readings[i];
 		sprintf(msg, "%s", proc ? "X  | " : "-  |  ");
 		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+
+
 	}
 }
 
@@ -125,10 +128,10 @@ static void test_system(motor_t *motor_left, motor_t *motor_right) {
 	HAL_Delay(1500);*/
 
 	// Servo Motors
-//	mg995_open_claw();
-//	HAL_Delay(4000);
-//	mg995_close_claw();
-//	HAL_Delay(4000);
+	mg995_open_claw();
+	HAL_Delay(4000);
+	mg995_close_claw();
+	HAL_Delay(4000);
 
 	// Read Colour Sensors
 
@@ -141,12 +144,12 @@ static void test_system(motor_t *motor_left, motor_t *motor_right) {
 	// Test rotation
 
 	// 200 is roughly 90 degrees
-	tb6612fng_move_fwd_single(motor_left, 205);
-	tb6612fng_move_rev_single(motor_right, 205);
-	HAL_Delay(2000);
-	tb6612fng_move_fwd_single(motor_right, 205);
-	tb6612fng_move_rev_single(motor_left, 205);
-	HAL_Delay(2000);
+//	tb6612fng_move_fwd_single(motor_left, 205);
+//	tb6612fng_move_rev_single(motor_right, 205);
+//	HAL_Delay(2000);
+//	tb6612fng_move_fwd_single(motor_right, 205);
+//	tb6612fng_move_rev_single(motor_left, 205);
+//	HAL_Delay(2000);
 
 
 //	print_raw_rgb();
@@ -246,7 +249,7 @@ int main(void)
   setup_color_sensors();
 
   // Ensure the gripper is open before starting the state machine
-  //mg995_close_claw();
+  mg995_close_claw();
 
   // Initialize robot sequence (state)
   enum RobotSequence currentState = START;
@@ -255,20 +258,37 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+//	tb6612fng_move_rev(&lm, &rm, 200 - 22, 200);
+//	HAL_Delay(600);
+//	tb6612fng_stop(&lm, &rm);
+//	HAL_Delay(1000);
+//
+//	tb6612fng_move_rev_single(&lm, 100);
+//	tb6612fng_move_fwd_single(&rm, 100);
+//	HAL_Delay(250);
+//	tb6612fng_stop(&lm, &rm);
+
+
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	print_raw_rgb();
-	print_processed_readings(RED);
+//	print_raw_rgb();
+//	print_processed_readings(RED);
+//	print_processed_readings(BLUE);
+//	 pickup(PICKUP, &lm, &rm);
+
      stateMachine(&currentState, &lm, &rm);
+////	  tb6612fng_move_fwd(&lm, &rm, MAX_PWM - 22, MAX_PWM);
+
 //	  mg995_close_claw();
 //	  HAL_Delay(1500);
 //	  mg995_open_claw();
 //HAL_Delay(1500);
 
-//	test_system(&lm, &rm);
+//	  test_system(&lm, &rm);
   }
   /* USER CODE END 3 */
 }

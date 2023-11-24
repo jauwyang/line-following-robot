@@ -22,31 +22,44 @@ void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorR
 }
 
 void followLineToTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
-	followLine(motorLeft, motorRight);
-
 	// Target detected and lined up to center
 	if (countMatchingSensorColourDetections(BLUE) > 0){
 		tb6612fng_stop(motorLeft, motorRight);
+		HAL_Delay(2000);
 		*currentState = PICKUP;
+		return;
 	}
+
+	followLine(motorLeft, motorRight);
 }
 
 void pickup(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
+//	mg995_open_claw();
+//	HAL_Delay(1000);
+//
+//	mg995_close_claw();
+
 	// Reverse to space from target
-	tb6612fng_move_rev(motorLeft, motorRight, 200, 200);
 	HAL_Delay(1000);
-
-	// Rotate clockwise to aim the target
-	tb6612fng_move_fwd_single(motorLeft, 200);
-	tb6612fng_move_rev_single(motorRight, 200);
-	HAL_Delay(2000);
-
-	// Open claw
+	tb6612fng_move_rev(motorLeft, motorRight, 200 - 22, 200);
+	HAL_Delay(470);
+	tb6612fng_stop(motorLeft, motorRight);
+	HAL_Delay(1000);
 	mg995_open_claw();
 
+	// Rotate clockwise to aim the target
+	tb6612fng_move_rev_single(motorLeft, 75);
+	tb6612fng_move_fwd_single(motorRight, 75);
+	HAL_Delay(300);
+//	tb6612fng_stop(motorLeft, motorRight);
+
+	// Open claw
+//	mg995_open_claw();
+//	HAL_Delay(1000);
+//
 	// Drive toward target
-	tb6612fng_move_fwd(motorLeft, motorRight, 200, 200);
-	HAL_Delay(1000);
+	tb6612fng_move_fwd(motorLeft, motorRight, 200 - 22, 200);
+	HAL_Delay(500);
 
 	// Close the claw
 	mg995_close_claw();
@@ -58,17 +71,18 @@ void pickup(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motor
 void backupFromTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	uint16_t motorPWM = 200;
 	tb6612fng_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
-	HAL_Delay(2500);
+	HAL_Delay(1500);
 
+	tb6612fng_stop(motorLeft, motorRight);
 	// transition state condition (assume it has finished backing up)
 	*currentState = ROTATE_TO_SAFE_ZONE;
 }
 
 void rotateToSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	// Rotate 90 degrees CCW
-	tb6612fng_move_fwd_single(motorRight, 200);
-	tb6612fng_move_rev_single(motorLeft, 200);
-	HAL_Delay(2000);
+	tb6612fng_move_rev_single(motorRight, 200);
+	tb6612fng_move_fwd_single(motorLeft, 200);
+	HAL_Delay(850);
 
 	*currentState = OFF_TRACK_TO_SAFE_ZONE_DRIVE;
 }
@@ -95,8 +109,8 @@ void dropOff(enum RobotSequence *currentState){
 
 void backUpFromSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	uint16_t motorPWM = 200;
-	tb6612fng_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
-	HAL_Delay(3000);
+	tb6612fng_move_rev(motorLeft, motorRight, motorPWM - 22, motorPWM);
+	HAL_Delay(3500);
 
 	*currentState = ROTATE_TO_TRACK;
 }
@@ -106,7 +120,7 @@ void rotateToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t
 	uint16_t motorPWM = 200;
 	tb6612fng_move_fwd_single(motorLeft, motorPWM);
 	tb6612fng_move_rev_single(motorRight, motorPWM);
-	HAL_Delay(4000);
+	HAL_Delay(1000);
 
 	*currentState = DRIVE_TO_TRACK;
 }
@@ -142,12 +156,12 @@ void stateMachine(enum RobotSequence *currentState, motor_t *motorLeft, motor_t 
             start(currentState, motorLeft, motorRight);
             break;
 
-        case FOLLOW_LINE_TO_TARGET:
-        	followLineToTarget(currentState, motorLeft, motorRight);
-            break;
-
         case PICKUP:
         	pickup(currentState, motorLeft, motorRight);
+            break;
+
+        case FOLLOW_LINE_TO_TARGET:
+        	followLineToTarget(currentState, motorLeft, motorRight);
             break;
 
         case BACKUP_FROM_TARGET:
