@@ -73,7 +73,7 @@ void rotateToLine_start(enum RobotSequence_start *currentState, motor_t *motorLe
 	// Rotate 90 degrees CCW
 	tb6612fng_move_rev_single(motorLeft, 200);
 	tb6612fng_move_fwd_single(motorRight, 200);
-	HAL_Delay(970);
+	HAL_Delay(2000);
 	tb6612fng_stop(motorLeft, motorRight);
 	HAL_Delay(1000);
 
