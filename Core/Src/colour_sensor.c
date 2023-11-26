@@ -24,8 +24,8 @@ static const uint16_t greenTapeAverageRequirement = 100;
 //};
 
 static const tapeColourBounds relativeBlue = {
-	.red = {40, infinitySensor},
-	.green = {40, infinitySensor},
+	.red = {12, infinitySensor},
+	.green = {12, infinitySensor},
 	.blue = {-1, -1},
 	.tapeColour = BLUE,
 };
@@ -67,7 +67,7 @@ bool isColourDetected(enum Colour tapeColour, rgb_cap_t sensorReading){
 			uint16_t diffG = sensorReading.blue - sensorReading.green;
 
 			return (isInChannelBounds(diffR, relativeBlue.red) &&
-					isInChannelBounds(diffG, relativeBlue.green));
+					isInChannelBounds(diffG, relativeBlue.green) && getAverageChannelValues(sensorReading) > greenTapeAverageRequirement);
 		}
 		default:
 			printf("UNDEFINED COLOUR"); // left to crash

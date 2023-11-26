@@ -18,13 +18,13 @@ char pidstuff[256];
  * 275, 85, 0
  * 275 * 1.15, 90 * 1.15, 0.5, RPM = 550 * 0.8
  * 275 * 1.2, 90 * 1.2, 0.5, RPM = 550 * 0.8
- * 275 * 1.15, 150 * 1.15, 0.25 * 1.15, RPM = 550 * 0.8
+ * 275 * 1.15, 150 * 1.15, 0.25 * 1.15, RPM = 550 * 0.8 low battery
  */
 
-const double Sf = 1.15;
+const double Sf = 1;
 
-static const double Kp = 275 * Sf; //250 is good value
-static const double Kd = 150 * Sf; //5
+static const double Kp = 275 * Sf - 80; //250 is good value
+static const double Kd = 150 * Sf + 40; //5
 static const double Ki = 0.25; // 0.01
 
 static const double GOAL = 2;
@@ -58,8 +58,9 @@ void followLine(motor_t *leftMotor, motor_t *rightMotor){
 	 * If currentLinePosition > GOAL: steer right
 	 * If currentLinePosition < GOAL: steer left
 	 */
-	/*while (linePosition == -1) {
+	while (linePosition == -1) {
 		if (previousError < 0) {
+			// Steer Left
 			tb6612fng_move_fwd(leftMotor, rightMotor, MIN_PWM, MAX_PWM);
 
 		} else {
@@ -68,13 +69,13 @@ void followLine(motor_t *leftMotor, motor_t *rightMotor){
 
 		// Update the linePosition each iteration
 		linePosition = getPositionOfColourSource(RED);
-	}*/
-
-	// TEMPORARY STOP CONDITION
-	if (linePosition == -1) {
-		tb6612fng_stop(leftMotor, rightMotor);
-		return;
 	}
+
+//	 TEMPORARY STOP CONDITION
+//	if (linePosition == -1) {
+//		tb6612fng_stop(leftMotor, rightMotor);
+//		return;
+//	}
 
 	// At least one sensor is now back on the line; proceed with computing the steering adjustment
 	double steeringAdjustment = PIDAlgorithm(linePosition);

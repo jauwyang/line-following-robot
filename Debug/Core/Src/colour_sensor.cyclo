@@ -1,7 +1,7 @@
 ../Core/Src/colour_sensor.c:34:6:readRawColourSensors	2
 ../Core/Src/colour_sensor.c:45:6:isInChannelBounds	3
 ../Core/Src/colour_sensor.c:49:10:getAverageChannelValues	1
-../Core/Src/colour_sensor.c:53:6:isColourDetected	9
+../Core/Src/colour_sensor.c:53:6:isColourDetected	10
 ../Core/Src/colour_sensor.c:79:6:processColourSensorReadings	2
 ../Core/Src/colour_sensor.c:98:10:countMatchingSensorColourDetections	3
 ../Core/Src/colour_sensor.c:115:8:getPositionOfColourSource	4

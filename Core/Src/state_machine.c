@@ -3,6 +3,7 @@
 #include "line_following.h"
 
 #include "mg995/mg995.h"
+#include "motors.h"
 
 #include <stdio.h>
 
@@ -21,18 +22,46 @@ void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorR
 }
 
 void followLineToTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
-	followLine(motorLeft, motorRight);
-
-	uint8_t middleSensorPosition = (floor(SENSOR_COUNT / 2.0));
-
-	// transition state condition (target detected & is lined up to its center)
-	if (getPositionOfColourSource(BLUE) == middleSensorPosition){
+	// Target detected and lined up to center
+	if (countMatchingSensorColourDetections(BLUE) > 0){
+		tb6612fng_stop(motorLeft, motorRight);
+//		HAL_Delay(700);
 		*currentState = PICKUP;
+		return;
 	}
+
+	followLine(motorLeft, motorRight);
 }
 
-void pickup(enum RobotSequence *currentState){
-	// TODO: move up set amount towards character if needed
+void pickup(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
+//	mg995_open_claw();
+//	HAL_Delay(1000);
+//
+//	mg995_close_claw();
+
+	// Reverse to space from target
+	HAL_Delay(500);
+	tb6612fng_move_rev(motorLeft, motorRight, 200 - 22, 200);
+	HAL_Delay(400);
+	tb6612fng_stop(motorLeft, motorRight);
+	HAL_Delay(500);
+	mg995_open_claw();
+
+	// Rotate clockwise to aim the target
+	tb6612fng_move_rev_single(motorLeft, 75);
+	tb6612fng_move_fwd_single(motorRight, 75);
+	HAL_Delay(290);
+//	tb6612fng_stop(motorLeft, motorRight);
+
+	// Open claw
+//	mg995_open_claw();
+//	HAL_Delay(1000);
+//
+	// Drive toward target
+	tb6612fng_move_fwd(motorLeft, motorRight, 200 - 22, 200);
+	HAL_Delay(500);
+
+	// Close the claw
 	mg995_close_claw();
 	
 	// transition state condition (assumed it has picked up)
@@ -40,30 +69,33 @@ void pickup(enum RobotSequence *currentState){
 }
 
 void backupFromTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
-	uint16_t motorPWM = 1;	// TODO: Change later
+	uint16_t motorPWM = 200;
 	tb6612fng_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
-	
+	HAL_Delay(1400);
+
+	tb6612fng_stop(motorLeft, motorRight);
 	// transition state condition (assume it has finished backing up)
 	*currentState = ROTATE_TO_SAFE_ZONE;
 }
 
 void rotateToSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
-	//run command to rotate motor X amount
-
 	// Rotate 90 degrees CCW
-	//tb6612fng_rotate(motorLeft, motorRight, rotation_params);
+	tb6612fng_move_rev_single(motorRight, 200);
+	tb6612fng_move_fwd_single(motorLeft, 200);
+	HAL_Delay(750);
+	tb6612fng_stop(motorLeft, motorRight);
 
-	// transition state condition (assumed it has rotated)
 	*currentState = OFF_TRACK_TO_SAFE_ZONE_DRIVE;
 }
 
 void offTrackToSafeZoneDrive(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
-	//drive forward
-	uint16_t motorPWM = 1;	// TODO: Change later
-	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
+	uint16_t motorPWM = 250;
+	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM , motorPWM);
+//	HAL_Delay(1550);
+//	tb6612fng_stop(motorLeft, motorRight);
+
 
 	uint8_t middleSensorPosition = (ceil(SENSOR_COUNT / 2));
-
 
 	// transition state condition (it reached the safe zone & is line up at robot's center)
 	if (getPositionOfColourSource(GREEN) == middleSensorPosition){
@@ -80,30 +112,32 @@ void dropOff(enum RobotSequence *currentState){
 }
 
 void backUpFromSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
-	//reverse backwards
-	uint16_t motorPWM = 1;	// TODO: Change later
-	tb6612fng_move_rev(motorLeft, motorRight, motorPWM, motorPWM);
+	uint16_t motorPWM = 200;
+	tb6612fng_move_rev(motorLeft, motorRight, motorPWM - 22, motorPWM);
+	HAL_Delay(3500);
+	tb6612fng_stop(motorLeft, motorRight);
 
-	// transition state condition (assume it has backed up)
 	*currentState = ROTATE_TO_TRACK;
 }
 
 void rotateToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
+	// Rotate 180 degrees CW
+	uint16_t motorPWM = 200;
+	tb6612fng_move_fwd_single(motorLeft, motorPWM);
+	tb6612fng_move_rev_single(motorRight, motorPWM);
+	HAL_Delay(900);
+//	tb6612fng_stop(motorLeft, motorRight);
 
-	// Rotate 180 degrees CCW
-	//tb6612fng_rotate(motorLeft, motorRight, rotation_params);
 	*currentState = DRIVE_TO_TRACK;
 }
 
 void driveToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight) {
-	uint16_t motorPWM = 0;	// TODO: Change later
+	uint16_t motorPWM = 250;
 	tb6612fng_move_fwd(motorLeft, motorRight, motorPWM, motorPWM);
+	HAL_Delay(100);
 
-	uint8_t middleSensorPosition = (ceil(SENSOR_COUNT / 2));
-
-	// transition state condition (it detects the path again)
 	// Drive forward until middle sensor detects red line
-	if (getPositionOfColourSource(RED) == middleSensorPosition) {
+	if (countMatchingSensorColourDetections(RED) > 0) {
 		*currentState = FOLLOW_LINE_TO_START;
 	}
 }
@@ -111,11 +145,11 @@ void driveToTrack(enum RobotSequence *currentState, motor_t *motorLeft, motor_t 
 void followLineToStart(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
 	followLine(motorLeft, motorRight);
 	
-	// transition state condition (start/end line detected)
-	uint8_t requiredSensorColourMatches = 3;
-	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches) {
-		*currentState = END;
-	}
+	// Start/end line is detected
+//	uint8_t requiredSensorColourMatches = 3;
+//	if (countMatchingSensorColourDetections(RED) >= requiredSensorColourMatches) {
+//		*currentState = END;
+//	}
 }
 
 void end(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight){
@@ -129,12 +163,12 @@ void stateMachine(enum RobotSequence *currentState, motor_t *motorLeft, motor_t 
             start(currentState, motorLeft, motorRight);
             break;
 
-        case FOLLOW_LINE_TO_TARGET:
-        	followLineToTarget(currentState, motorLeft, motorRight);
+        case PICKUP:
+        	pickup(currentState, motorLeft, motorRight);
             break;
 
-        case PICKUP:
-        	pickup(currentState);
+        case FOLLOW_LINE_TO_TARGET:
+        	followLineToTarget(currentState, motorLeft, motorRight);
             break;
 
         case BACKUP_FROM_TARGET:

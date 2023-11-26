@@ -22,8 +22,8 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-Core/Src/color \
 Core/Src \
+Core/Src/color \
 Core/Src/mg995 \
 Core/Src/tb6612fng \
 Core/Startup \

@@ -23,10 +23,15 @@
 /* USER CODE BEGIN Includes */
 #include "mg995/mg995.h"
 #include "color/apds9960.h"
+#include "tb6612fng/tb6612fng.h"
 
 #include "state_machine.h"
 #include "colour_sensor.h"
 
+#include "state_machine_start.h"
+#include "color/apds9960.h"
+
+#include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -52,7 +57,7 @@ I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
-TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim10;
 
 UART_HandleTypeDef huart2;
 
@@ -67,7 +72,7 @@ static void MX_TIM2_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART2_UART_Init(void);
-static void MX_TIM3_Init(void);
+static void MX_TIM10_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -94,6 +99,16 @@ static void print_raw_rgb(void) {
 		sprintf(msg, "(%hu,%hu,%hu)  |  ", cap.red, cap.green, cap.blue);
 		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 	}
+
+//	// Output to .txt
+//	FILE *file = fopen("raw_rgb.txt", "w");
+//	if (file == NULL) {
+//		//F
+//		return;
+//	}
+//	fprintf(file, "%s\n", header);
+//	fprintf(file, "%s\n", msg);
+//	fclose(file);
 }
 
 static void print_processed_readings(enum Colour colour) {
@@ -110,7 +125,20 @@ static void print_processed_readings(enum Colour colour) {
 		bool proc = proc_readings[i];
 		sprintf(msg, "%s", proc ? "X  | " : "-  |  ");
 		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+
+
 	}
+
+//	// Output to .txt
+//	FILE *file = fopen("processed_rgb.txt", "w");
+//	if (file == NULL) {
+//		//F
+//		return;
+//	}
+//	fprintf(file, "%s\n", header);
+//	fprintf(file, "%s\n", msg);
+//	fclose(file);
+
 }
 
 static void test_system(motor_t *motor_left, motor_t *motor_right) {
@@ -137,6 +165,17 @@ static void test_system(motor_t *motor_left, motor_t *motor_right) {
 	// Blue:
 	// Green: 16 - 22, 20 - 50, 9 - 30
 	// Red:
+
+	// Test rotation
+
+	// 200 is roughly 90 degrees
+//	tb6612fng_move_fwd_single(motor_left, 205);
+//	tb6612fng_move_rev_single(motor_right, 205);
+//	HAL_Delay(2000);
+//	tb6612fng_move_fwd_single(motor_right, 205);
+//	tb6612fng_move_rev_single(motor_left, 205);
+//	HAL_Delay(2000);
+
 
 //	print_raw_rgb();
 //	print_processed_readings(GREEN);
@@ -196,7 +235,7 @@ int main(void)
   MX_TIM1_Init();
   MX_I2C1_Init();
   MX_USART2_UART_Init();
-  MX_TIM3_Init();
+  MX_TIM10_Init();
   /* USER CODE BEGIN 2 */
 
   /**
@@ -205,6 +244,9 @@ int main(void)
    * 32 - Red
    *
    */
+
+  // Start the timer base
+  HAL_TIM_Base_Start(&htim10);
 
   // MG995 Servo Motor
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
@@ -232,26 +274,86 @@ int main(void)
   setup_color_sensors();
 
   // Ensure the gripper is open before starting the state machine
-  mg995_open_claw();
+  mg995_close_claw();
 
   // Initialize robot sequence (state)
-  enum RobotSequence currentState = START;
+//  enum RobotSequence currentState = START;
+  enum RobotSequence_start currentState_start = START_START;
+//  currentState_start = ROTATE_TO_LINE_START;
+
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+//	tb6612fng_move_rev(&lm, &rm, 200 - 22, 200);
+//	HAL_Delay(600);
+//	tb6612fng_stop(&lm, &rm);
+//	HAL_Delay(1000);
+//
+//	tb6612fng_move_rev_single(&lm, 100);
+//	tb6612fng_move_fwd_single(&rm, 100);
+//	HAL_Delay(250);
+//	tb6612fng_stop(&lm, &rm);
+
+
+//	 pickup(PICKUP, &lm, &rm);
+//	 return;
+//	tb6612fng_move_fwd_single(&lm, 200);
+//	tb6612fng_move_rev_single(&rm, 200);
+//	HAL_Delay(1300);
+//	tb6612fng_stop(&lm, &rm);
+//
+//
+//	return;
+//  currentState = PICKUP;
+
+//  currentState = BACKUP_FROM_TARGET;
+//  currentState = DRIVE_TO_TRACK;
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  //test_system(&lm, &rm);
-	  //tb6612fng_move_fwd(&lm, &rm, MAX_PWM, MAX_PWM);
-	  //tb6612fng_move_fwd(&lm, &rm, 150, 150);
+
+
+	  //CALIRBRATION TEST (MUST TURN OFFFF
+//	  rgb_cap_t rawSensorReadings[5];
+//	  readRawColourSensors(rawSensorReadings);
+//
+//	  bool processedREDSensorReadings[5];
+//	  processColourSensorReadings(processedREDSensorReadings, rawSensorReadings, RED);
+//	  if (processedREDSensorReadings[1]) {
+
+//		  tb6612fng_move_fwd_single(&rm, MAX_PWM);
+//	  } else {
+//		  tb6612fng_move_fwd_single(&rm, 0);
+//	  }
+//
+//	  bool processedGREENSensorReadings[5];
+//	  processColourSensorReadings(processedGREENSensorReadings, rawSensorReadings, GREEN);
+//	  if (processedGREENSensorReadings[1]) {
+//		  tb6612fng_move_fwd_single(&lm, MAX_PWM);
+//	  } else {
+//		  tb6612fng_move_fwd_single(&lm, 0);
+//	  }
+
+
 	print_raw_rgb();
 	print_processed_readings(RED);
-	stateMachine(&currentState, &lm, &rm);
+	//print_processed_readings(GREEN);
+//	print_processed_readings(BLUE);
+	 stateMachine_start(&currentState_start, &lm, &rm);
+//     stateMachine(&currentState, &lm, &rm);
+////	  tb6612fng_move_fwd(&lm, &rm, MAX_PWM - 22, MAX_PWM);
+
+//	  mg995_close_claw();
+//	  HAL_Delay(1500);
+//	  mg995_open_claw();
+//HAL_Delay(1500);
+
+//	  test_system(&lm, &rm);
   }
   /* USER CODE END 3 */
 }
@@ -263,6 +365,7 @@ int main(void)
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
@@ -475,47 +578,33 @@ static void MX_TIM2_Init(void)
 }
 
 /**
-  * @brief TIM3 Initialization Function
+  * @brief TIM10 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_TIM3_Init(void)
+static void MX_TIM10_Init(void)
 {
 
-  /* USER CODE BEGIN TIM3_Init 0 */
+  /* USER CODE BEGIN TIM10_Init 0 */
 
-  /* USER CODE END TIM3_Init 0 */
+  /* USER CODE END TIM10_Init 0 */
 
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  /* USER CODE BEGIN TIM10_Init 1 */
 
-  /* USER CODE BEGIN TIM3_Init 1 */
-
-  /* USER CODE END TIM3_Init 1 */
-  htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 42000-1;
-  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 65535;
-  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  /* USER CODE END TIM10_Init 1 */
+  htim10.Instance = TIM10;
+  htim10.Init.Prescaler = 42000-1;
+  htim10.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim10.Init.Period = 65535;
+  htim10.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim10.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim10) != HAL_OK)
   {
     Error_Handler();
   }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM3_Init 2 */
+  /* USER CODE BEGIN TIM10_Init 2 */
 
-  /* USER CODE END TIM3_Init 2 */
+  /* USER CODE END TIM10_Init 2 */
 
 }
 

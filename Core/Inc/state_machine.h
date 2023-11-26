@@ -20,7 +20,7 @@ enum RobotSequence {
 
 void start(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
 void followLineToTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
-void pickup(enum RobotSequence *currentState);
+void pickup(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
 void backupFromTarget(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
 void rotateToSafeZone(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
 void offTrackToSafeZoneDrive(enum RobotSequence *currentState, motor_t *motorLeft, motor_t *motorRight);
